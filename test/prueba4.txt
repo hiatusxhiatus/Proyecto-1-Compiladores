@@ -1,0 +1,20 @@
+| Prueba 4: Operadores aritmeticos, relacionales y logicos
+
+coal navidad ¿ ? ¡
+    local int x = 10 endl
+    local int y = 20 endl
+    local float z = 5.5 endl
+    local boolean resultado endl
+    
+    x = ¿ x + y ? * 2 endl
+    z = z // 2.0 endl
+    
+    resultado = ¿ x >= y ? @ ¿ z <= 3.0 ? endl
+    resultado = Σ resultado endl
+    
+    local int potencia = x ^ 2 endl
+    local int modulo = y % 3 endl
+    
+    show ¿ potencia ? endl
+    show ¿ modulo ? endl
+!

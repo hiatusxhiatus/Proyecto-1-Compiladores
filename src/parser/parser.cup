@@ -1,0 +1,44 @@
+package parser;
+
+import java_cup.runtime.*;
+
+parser code {:
+    public void syntax_error(Symbol s) {
+        System.err.println("Error sintactico en linea " + (s.left+1) + ", columna " + (s.right+1));
+    }
+:};
+
+// terminales - palabras reservadas
+terminal WORLD, LOCAL, DECIDE, OF, ELSE, END, LOOP, EXIT, WHEN;
+terminal FOR, RETURN, BREAK, SHOW, GET, GIFT, NAVIDAD, COAL, ENDL;
+
+// tipos
+terminal INT, FLOAT, BOOLEAN, CHAR, STRING;
+
+// operadores aritmeticos
+terminal MAS, MENOS, MULT, DIV, DIV_ENTERA, MODULO, POTENCIA;
+terminal INCREMENTO, DECREMENTO;
+
+// operadores relacionales
+terminal MENOR, MENOR_IGUAL, MAYOR, MAYOR_IGUAL, IGUAL_IGUAL, DIFERENTE;
+
+// operadores logicos
+terminal AND, OR, NOT;
+
+// simbolos
+terminal PAREN_IZQ, PAREN_DER;
+terminal LLAVE_IZQ, LLAVE_DER;
+terminal CORCHETE_IZQ, CORCHETE_DER;
+terminal FLECHA, COMA, ASIGNACION;
+
+// literales
+terminal Integer INT_LIT;
+terminal Double FLOAT_LIT;
+terminal String ID, STRING_LIT, CHAR_LIT;
+terminal String BOOL_LIT;
+
+non terminal programa;
+
+start with programa;
+
+programa ::= ;

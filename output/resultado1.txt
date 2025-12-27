@@ -1,0 +1,50 @@
+ANALISIS LEXICO
+Archivo: test/prueba1.txt
+================
+
+TOKEN           LEXEMA               LINEA      COLUMNA   
+-----------------------------------------------------------
+COAL            coal                 3          1         
+NAVIDAD         navidad              3          6         
+PAREN_IZQ       ¿                    3          14        
+PAREN_DER       ?                    3          16        
+LLAVE_IZQ       ¡                    3          18        
+LOCAL           local                4          5         
+INT             int                  4          11        
+ID              contador             4          15        
+ASIGNACION      =                    4          24        
+INT_LIT         0                    4          26        
+ENDL            endl                 4          28        
+LOCAL           local                5          5         
+FLOAT           float                5          11        
+ID              precio               5          17        
+ASIGNACION      =                    5          24        
+FLOAT_LIT       99.99                5          26        
+ENDL            endl                 5          32        
+LOCAL           local                6          5         
+BOOLEAN         boolean              6          11        
+ID              activo               6          19        
+ASIGNACION      =                    6          26        
+BOOL_LIT        true                 6          28        
+ENDL            endl                 6          33        
+ID              contador             8          5         
+ASIGNACION      =                    8          14        
+ID              contador             8          16        
+MAS             +                    8          25        
+INT_LIT         1                    8          27        
+ENDL            endl                 8          29        
+ID              precio               9          5         
+ASIGNACION      =                    9          12        
+ID              precio               9          14        
+MULT            *                    9          21        
+FLOAT_LIT       1.15                 9          23        
+ENDL            endl                 9          28        
+SHOW            show                 11         5         
+PAREN_IZQ       ¿                    11         10        
+ID              contador             11         12        
+PAREN_DER       ?                    11         21        
+ENDL            endl                 11         23        
+LLAVE_DER       !                    12         1         
+
+-----------------------------------------------------------
+Total de tokens: 41

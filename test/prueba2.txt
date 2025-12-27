@@ -1,0 +1,21 @@
+| Prueba 2: Uso de estructuras de control decide y loop
+
+coal navidad ¿ ? ¡
+    local int n = 10 endl
+    local int suma = 0 endl
+    
+    decide of
+        ¿ n > 0 ? -> ¡
+            suma = suma + n endl
+            n-- endl
+        !
+        else -> ¡
+            show ¿ "fin" ? endl
+        !
+    end decide endl
+    
+    loop
+        suma++ endl
+        exit when ¿ suma >= 100 ? endl
+    end loop endl
+!

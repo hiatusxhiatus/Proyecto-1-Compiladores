@@ -1,0 +1,43 @@
+ANALISIS LEXICO
+Archivo: test/prueba5.txt
+================
+
+TOKEN           LEXEMA               LINEA      COLUMNA   
+-----------------------------------------------------------
+COAL            coal                 8          1         
+NAVIDAD         navidad              8          6         
+PAREN_IZQ       ¿                    8          14        
+PAREN_DER       ?                    8          16        
+LLAVE_IZQ       ¡                    8          18        
+LOCAL           local                9          5         
+STRING          string               9          11        
+ID              mensaje              9          18        
+ASIGNACION      =                    9          26        
+STRING_LIT      "Hola mundo"         9          28        
+ENDL            endl                 9          41        
+LOCAL           local                10         5         
+CHAR            char                 10         11        
+ID              letra                10         16        
+ASIGNACION      =                    10         22        
+CHAR_LIT        'A'                  10         24        
+ENDL            endl                 10         28        
+SHOW            show                 12         5         
+PAREN_IZQ       ¿                    12         10        
+ID              mensaje              12         12        
+PAREN_DER       ?                    12         20        
+ENDL            endl                 12         22        
+LOCAL           local                17         5         
+STRING          string               17         11        
+ID              otro                 17         18        
+ASIGNACION      =                    17         23        
+STRING_LIT      "Texto con numeros 123" 17         25        
+ENDL            endl                 17         49        
+SHOW            show                 18         5         
+PAREN_IZQ       ¿                    18         10        
+ID              otro                 18         12        
+PAREN_DER       ?                    18         17        
+ENDL            endl                 18         19        
+LLAVE_DER       !                    19         1         
+
+-----------------------------------------------------------
+Total de tokens: 34

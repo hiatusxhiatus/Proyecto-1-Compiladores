@@ -1,0 +1,12 @@
+| Prueba 1: Declaracion de variables y operaciones basicas
+
+coal navidad ¿ ? ¡
+    local int contador = 0 endl
+    local float precio = 99.99 endl
+    local boolean activo = true endl
+    
+    contador = contador + 1 endl
+    precio = precio * 1.15 endl
+    
+    show ¿ contador ? endl
+!

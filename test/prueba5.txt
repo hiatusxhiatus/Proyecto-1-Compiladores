@@ -1,0 +1,19 @@
+| Prueba 5: Comentarios de una y multiples lineas, strings
+
+є
+Este es un comentario
+de varias lineas
+э
+
+coal navidad ¿ ? ¡
+    local string mensaje = "Hola mundo" endl
+    local char letra = 'A' endl
+    
+    show ¿ mensaje ? endl | mostrar mensaje
+    
+    є mas comentarios
+       aqui э
+    
+    local string otro = "Texto con numeros 123" endl
+    show ¿ otro ? endl
+!

@@ -1,0 +1,58 @@
+ANALISIS LEXICO
+Archivo: test/prueba6.txt
+================
+
+TOKEN           LEXEMA               LINEA      COLUMNA   
+-----------------------------------------------------------
+COAL            coal                 3          1         
+NAVIDAD         navidad              3          6         
+PAREN_IZQ       ¿                    3          14        
+PAREN_DER       ?                    3          16        
+LLAVE_IZQ       ¡                    3          18        
+LOCAL           local                4          5         
+INT             int                  4          11        
+ID              x                    4          15        
+ASIGNACION      =                    4          17        
+INT_LIT         42                   4          19        
+ENDL            endl                 4          22        
+LOCAL           local                5          5         
+FLOAT           float                5          11        
+ID              y                    5          17        
+
+[ERROR] Caracter no reconocido: '$'
+FLOAT_LIT       3.14                 5          21        
+ENDL            endl                 5          26        
+ID              x                    7          5         
+ASIGNACION      =                    7          7         
+ID              x                    7          9         
+
+[ERROR] Caracter no reconocido: '&'
+INT_LIT         5                    7          13        
+ENDL            endl                 7          15        
+LOCAL           local                9          5         
+STRING          string               9          11        
+ID              texto                9          18        
+ASIGNACION      =                    9          24        
+STRING_LIT      "bien"               9          26        
+ENDL            endl                 9          33        
+SHOW            show                 10         5         
+PAREN_IZQ       ¿                    10         10        
+ID              texto                10         12        
+PAREN_DER       ?                    10         18        
+ENDL            endl                 10         20        
+LOCAL           local                12         5         
+INT             int                  12         11        
+ID              z                    12         15        
+ASIGNACION      =                    12         17        
+INT_LIT         100                  12         19        
+ENDL            endl                 12         23        
+ID              z                    13         5         
+
+[ERROR] Caracter no reconocido: '#'
+ENDL            endl                 13         8         
+LLAVE_DER       !                    14         1         
+
+-----------------------------------------------------------
+Total de tokens: 41
+
+Se encontraron errores lexicos durante el analisis.

@@ -1,0 +1,20 @@
+| Prueba 3: Declaracion de funciones y uso de arreglos
+
+world int resultado = 0 endl
+
+gift int calcular ¿ int a, int b ? ¡
+    local int temp = a + b endl
+    return temp endl
+!
+
+coal navidad ¿ ? ¡
+    local int datos[5] endl
+    local int i = 0 endl
+    
+    for ¿ i = 0 @ i < 5 @ i++ ? ¡
+        datos[i] = i * 2 endl
+    !
+    
+    resultado = calcular ¿ 10, 20 ? endl
+    show ¿ resultado ? endl
+!

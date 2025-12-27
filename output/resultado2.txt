@@ -1,0 +1,73 @@
+ANALISIS LEXICO
+Archivo: test/prueba2.txt
+================
+
+TOKEN           LEXEMA               LINEA      COLUMNA   
+-----------------------------------------------------------
+COAL            coal                 3          1         
+NAVIDAD         navidad              3          6         
+PAREN_IZQ       ¿                    3          14        
+PAREN_DER       ?                    3          16        
+LLAVE_IZQ       ¡                    3          18        
+LOCAL           local                4          5         
+INT             int                  4          11        
+ID              n                    4          15        
+ASIGNACION      =                    4          17        
+INT_LIT         10                   4          19        
+ENDL            endl                 4          22        
+LOCAL           local                5          5         
+INT             int                  5          11        
+ID              suma                 5          15        
+ASIGNACION      =                    5          20        
+INT_LIT         0                    5          22        
+ENDL            endl                 5          24        
+DECIDE          decide               7          5         
+OF              of                   7          12        
+PAREN_IZQ       ¿                    8          9         
+ID              n                    8          11        
+MAYOR           >                    8          13        
+INT_LIT         0                    8          15        
+PAREN_DER       ?                    8          17        
+FLECHA          ->                   8          19        
+LLAVE_IZQ       ¡                    8          22        
+ID              suma                 9          13        
+ASIGNACION      =                    9          18        
+ID              suma                 9          20        
+MAS             +                    9          25        
+ID              n                    9          27        
+ENDL            endl                 9          29        
+ID              n                    10         13        
+DECREMENTO      --                   10         14        
+ENDL            endl                 10         17        
+LLAVE_DER       !                    11         9         
+ELSE            else                 12         9         
+FLECHA          ->                   12         14        
+LLAVE_IZQ       ¡                    12         17        
+SHOW            show                 13         13        
+PAREN_IZQ       ¿                    13         18        
+STRING_LIT      "fin"                13         20        
+PAREN_DER       ?                    13         26        
+ENDL            endl                 13         28        
+LLAVE_DER       !                    14         9         
+END             end                  15         5         
+DECIDE          decide               15         9         
+ENDL            endl                 15         16        
+LOOP            loop                 17         5         
+ID              suma                 18         9         
+INCREMENTO      ++                   18         13        
+ENDL            endl                 18         16        
+EXIT            exit                 19         9         
+WHEN            when                 19         14        
+PAREN_IZQ       ¿                    19         19        
+ID              suma                 19         21        
+MAYOR_IGUAL     >=                   19         26        
+INT_LIT         100                  19         29        
+PAREN_DER       ?                    19         33        
+ENDL            endl                 19         35        
+END             end                  20         5         
+LOOP            loop                 20         9         
+ENDL            endl                 20         14        
+LLAVE_DER       !                    21         1         
+
+-----------------------------------------------------------
+Total de tokens: 64

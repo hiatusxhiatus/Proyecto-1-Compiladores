@@ -1,0 +1,14 @@
+| Prueba 6: Codigo con errores lexicos intencionales
+
+coal navidad ¿ ? ¡
+    local int x = 42 endl
+    local float y $ 3.14 endl  | error: $ no es valido
+    
+    x = x & 5 endl  | error: & no es un operador valido
+    
+    local string texto = "bien" endl
+    show ¿ texto ? endl
+    
+    local int z = 100 endl  | esto esta bien
+    z# endl  | error: # no es valido
+!
