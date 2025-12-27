@@ -1,122 +1,87 @@
-# Analizador Léxico - Proyecto 1
-## Compiladores e Intérpretes - Verano 2025/2026
-### Estudiante: Daniel Zeas Brown
+# Proyecto 1 - Analizador Léxico
+Curso: Compiladores e Intérpretes (Verano 2025/2025)
+Daniel Zeas Brown
 
+---
 
-### Descripción
-Analizador léxico (scanner) para un lenguaje imperativo diseñado para configuración de chips en sistemas empotrados.
+Analizador léxico para un lenguaje de programación imperativo orientado a configuración de chips.
 
-### Requisitos
-- Java JDK 8 o superior
-- JFlex (incluido en lib/)
-- CUP (incluido en lib/)
+## ¿Qué hace este proyecto?
 
-### Estructura del proyecto
-```
-Proyecto-1-Compiladores/
-├── lib/                    # Librerías JFlex y CUP
-├── src/
-│   ├── lexer/
-│   │   ├── lexer.flex     # Especificación del analizador léxico
-│   │   └── Lexer.java     # Generado por JFlex
-│   ├── parser/
-│   │   ├── parser.cup     # Especificación para generar tokens
-│   │   └── sym.java       # Tokens generados por CUP
-│   └── Main.java          # Programa principal
-├── test/                   # Archivos de prueba
-└── output/                 # Resultados del análisis
-```
+Lee un archivo de código fuente y lo divide en tokens. Genera un archivo de salida con todos los tokens encontrados, incluyendo su posición en el código.
 
-### Compilación
+## Requisitos
 
-#### Paso 1: Generar archivos con CUP
+- Java 8 o superior
+- Las librerías ya están incluidas en la carpeta `lib/`
+
+## Compilar el proyecto
+
+Hay que ejecutar estos comandos en orden:
 ```bash
+# 1. Generar el archivo de tokens
 java -jar lib/java-cup-11b.jar -destdir src/parser -parser Parser src/parser/parser.cup
-```
 
-#### Paso 2: Generar lexer con JFlex
-```bash
+# 2. Generar el analizador léxico
 jflex -d src/lexer src/lexer/lexer.flex
-```
 
-#### Paso 3: Compilar proyecto Java
-
-**macOS/Linux:**
-```bash
+# 3. Compilar todo (macOS/Linux)
 javac -cp "lib/*:." src/Main.java src/lexer/Lexer.java src/parser/*.java
-```
 
-**Windows:**
-```bash
+# En Windows usar ; en lugar de :
 javac -cp "lib/*;." src/Main.java src/lexer/Lexer.java src/parser/*.java
 ```
 
-### Ejecución
-
-**macOS/Linux:**
+## Ejecutar
 ```bash
+# macOS/Linux
 java -cp "lib/*:src:." Main <archivo_entrada> <archivo_salida>
-```
 
-**Windows:**
-```bash
+# Windows
 java -cp "lib/*;src;." Main <archivo_entrada> <archivo_salida>
 ```
 
-### Ejemplos de uso
+**Ejemplo:**
 ```bash
-# Analizar prueba básica
 java -cp "lib/*:src:." Main test/prueba1.txt output/resultado1.txt
-
-# Analizar programa con estructuras de control
-java -cp "lib/*:src:." Main test/prueba2.txt output/resultado2.txt
-
-# Analizar programa con errores
-java -cp "lib/*:src:." Main test/prueba6.txt output/resultado6.txt
 ```
 
-### Archivos de prueba incluidos
+## Pruebas incluidas
 
-- **prueba1.txt**: Variables y operaciones básicas
-- **prueba2.txt**: Estructuras de control (decide, loop)
-- **prueba3.txt**: Funciones y arreglos
-- **prueba4.txt**: Operadores complejos
-- **prueba5.txt**: Comentarios y strings
-- **prueba6.txt**: Manejo de errores léxicos
+En la carpeta `test/` hay 6 archivos de prueba:
 
-### Tokens reconocidos
+- `prueba1.txt` - Variables y operaciones básicas
+- `prueba2.txt` - Estructuras de control (decide, loop)
+- `prueba3.txt` - Funciones y arreglos
+- `prueba4.txt` - Operadores y expresiones complejas
+- `prueba5.txt` - Comentarios y cadenas de texto
+- `prueba6.txt` - Errores léxicos (para probar el manejo de errores)
 
-#### Palabras reservadas
-world, local, decide, of, else, end, loop, exit, when, for, return, break, show, get, gift, navidad, coal, endl
+## Estructura de carpetas
+```
+Proyecto-1-Compiladores/
+├── lib/                    (librerías de JFlex y CUP)
+├── src/
+│   ├── lexer/             (especificación y código del lexer)
+│   ├── parser/            (definición de tokens)
+│   └── Main.java          (programa principal)
+├── test/                   (archivos de prueba)
+└── output/                 (resultados del análisis)
+```
 
-#### Tipos de datos
-int, float, boolean, char, string
+## Características del lenguaje
 
-#### Operadores aritméticos
-+, -, *, /, //, %, ^, ++, --
+El analizador reconoce:
 
-#### Operadores relacionales
-<, <=, >, >=, ==, !=
+- Palabras clave: world, local, decide, loop, for, etc.
+- Tipos: int, float, boolean, char, string
+- Operadores: +, -, *, /, //, %, ^, ++, --
+- Comparaciones: <, <=, >, >=, ==, !=
+- Lógicos: @ (and), ~ (or), Σ (not)
+- Paréntesis especiales: ¿ y ? en lugar de ( y )
+- Llaves especiales: ¡ y ! en lugar de { y }
+- Comentarios: | (una línea) y є...э (multilínea)
 
-#### Operadores lógicos
-@ (AND), ~ (OR), Σ (NOT)
+## Manejo de errores
 
-#### Símbolos especiales
-¿ ? (paréntesis), ¡ ! (llaves), [ ] (corchetes), ->, =, ,
-
-#### Literales
-Enteros, flotantes, strings, caracteres, booleanos (true/false)
-
-### Manejo de errores
-
-El analizador implementa recuperación en modo pánico:
-- Detecta caracteres no reconocidos
-- Reporta línea y columna del error
-- Continúa el análisis después del error
-
-### Autores
-[Tu nombre aquí]
-[Nombre de tu compañero]
-
-### Fecha
-Diciembre 2025
+Cuando encuentra un carácter que no reconoce, lo reporta en el archivo de salida y continúa analizando el resto del código.
