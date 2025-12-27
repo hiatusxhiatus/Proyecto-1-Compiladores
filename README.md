@@ -25,16 +25,17 @@ java -jar lib/java-cup-11b.jar -destdir src/parser -parser Parser src/parser/par
 # 2. Generar el analizador léxico
 jflex -d src/lexer src/lexer/lexer.flex
 
-# 3. Compilar todo (macOS/Linux)
+# 3. Compilar todo
+# Compilación para macOS y Linux:
 javac -cp "lib/*:." src/Main.java src/lexer/Lexer.java src/parser/*.java
 
-# En Windows usar ; en lugar de :
+# Compilación para Windows:
 javac -cp "lib/*;." src/Main.java src/lexer/Lexer.java src/parser/*.java
 ```
 
 ## Ejecutar
 ```bash
-# macOS/Linux
+# macOS y Linux
 java -cp "lib/*:src:." Main <archivo_entrada> <archivo_salida>
 
 # Windows
