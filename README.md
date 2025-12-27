@@ -1,5 +1,5 @@
 # Proyecto 1 - Analizador Léxico
-Curso: Compiladores e Intérpretes (Verano 2025/2025)
+Curso: Compiladores e Intérpretes (Verano 2025/2026)
 Daniel Zeas Brown
 
 ---
@@ -45,6 +45,11 @@ java -cp "lib/*;src;." Main <archivo_entrada> <archivo_salida>
 **Ejemplo:**
 ```bash
 java -cp "lib/*:src:." Main test/prueba1.txt output/resultado1.txt
+java -cp "lib/*:src:." Main test/prueba2.txt output/resultado2.txt
+java -cp "lib/*:src:." Main test/prueba3.txt output/resultado3.txt
+java -cp "lib/*:src:." Main test/prueba4.txt output/resultado4.txt
+java -cp "lib/*:src:." Main test/prueba5.txt output/resultado5.txt
+java -cp "lib/*:src:." Main test/prueba6.txt output/resultado6.txt
 ```
 
 ## Pruebas incluidas
