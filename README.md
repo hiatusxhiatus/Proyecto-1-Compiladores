@@ -1,3 +1,9 @@
+## Repositorio
+
+Este proyecto está disponible en GitHub: https://github.com/TU_USUARIO/Proyecto-1-Compiladores
+
+---
+
 # Proyecto 1 - Analizador Léxico
 Curso: Compiladores e Intérpretes (Verano 2025/2026)
 Daniel Zeas Brown
