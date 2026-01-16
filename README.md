@@ -1,6 +1,6 @@
 ## Repositorio
 
-Este proyecto está disponible en GitHub: https://github.com/TU_USUARIO/Proyecto-1-Compiladores
+Este proyecto está disponible en GitHub: https://github.com/hiatusxhiatus/Proyecto-1-Compiladores
 
 ---
 
