@@ -6,6 +6,10 @@
 package parser;
 
 import java_cup.runtime.*;
+import utils.Nodo;
+import utils.TablaSimbolos;
+import java.util.ArrayList;
+import java.util.List;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -31,7 +35,8 @@ public class Parser extends java_cup.runtime.lr_parser {
   /** Production table. */
   protected static final short _production_table[][] = 
     unpackFromStrings(new String[] {
-    "\000\002\000\002\002\004\000\002\002\002" });
+    "\000\004\000\002\002\004\000\002\002\003\000\002\007" +
+    "\010\000\002\014\004" });
 
   /** Access to production table. */
   public short[][] production_table() {return _production_table;}
@@ -39,8 +44,12 @@ public class Parser extends java_cup.runtime.lr_parser {
   /** Parse-action table. */
   protected static final short[][] _action_table = 
     unpackFromStrings(new String[] {
-    "\000\003\000\004\002\000\001\002\000\004\002\005\001" +
-    "\002\000\004\002\001\001\002" });
+    "\000\014\000\004\022\005\001\002\000\004\002\000\001" +
+    "\002\000\004\024\010\001\002\000\004\002\007\001\002" +
+    "\000\004\002\001\001\002\000\004\023\011\001\002\000" +
+    "\004\055\012\001\002\000\004\056\013\001\002\000\004" +
+    "\057\014\001\002\000\004\060\016\001\002\000\004\002" +
+    "\uffff\001\002\000\004\002\ufffe\001\002" });
 
   /** Access to parse-action table. */
   public short[][] action_table() {return _action_table;}
@@ -48,8 +57,11 @@ public class Parser extends java_cup.runtime.lr_parser {
   /** <code>reduce_goto</code> table. */
   protected static final short[][] _reduce_table = 
     unpackFromStrings(new String[] {
-    "\000\003\000\004\002\003\001\001\000\002\001\001\000" +
-    "\002\001\001" });
+    "\000\014\000\006\002\005\007\003\001\001\000\002\001" +
+    "\001\000\002\001\001\000\002\001\001\000\002\001\001" +
+    "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
+    "\004\014\014\001\001\000\002\001\001\000\002\001\001" +
+    "\000\002\001\001" });
 
   /** Access to <code>reduce_goto</code> table. */
   public short[][] reduce_table() {return _reduce_table;}
@@ -88,14 +100,54 @@ public class Parser extends java_cup.runtime.lr_parser {
 
 
 
+    // Lista de tablas de simbolos
+    public List<TablaSimbolos> tablasSimbolos = new ArrayList<>();
+    public TablaSimbolos tablaActual = null;
+    public Nodo arbolSintactico = null;
+    
+    // Manejo de errores sintacticos
     public void syntax_error(Symbol s) {
-        System.err.println("Error sintactico en linea " + (s.left+1) + ", columna " + (s.right+1));
+        System.err.println("[ERROR SINTACTICO] Linea " + (s.left) + 
+                          ", Columna " + (s.right) + 
+                          " - Token inesperado: " + s.value);
+    }
+    
+    // Error no recuperable
+    public void unrecovered_syntax_error(Symbol s) {
+        System.err.println("[ERROR FATAL] No se pudo recuperar del error sintactico");
+        System.err.println("Linea " + (s.left) + ", Columna " + (s.right));
+    }
+    
+    // Imprimir tablas de simbolos
+    public void imprimirTablas() {
+        System.out.println("\n========== TABLAS DE SIMBOLOS ==========");
+        for (TablaSimbolos tabla : tablasSimbolos) {
+            tabla.imprimir();
+        }
+        System.out.println("=========================================\n");
     }
 
 
 /** Cup generated class to encapsulate user supplied action code.*/
 @SuppressWarnings({"rawtypes", "unchecked", "unused"})
 class CUP$Parser$actions {
+
+
+    // Helper para crear nodos
+    private Nodo crearNodo(String lexema, String tipo) {
+        return new Nodo(lexema, tipo);
+    }
+    
+    private Nodo crearNodoConHijos(String lexema, String tipo, Nodo... hijos) {
+        List<Nodo> listaHijos = new ArrayList<>();
+        for (Nodo hijo : hijos) {
+            if (hijo != null) {
+                listaHijos.add(hijo);
+            }
+        }
+        return new Nodo(lexema, tipo, listaHijos);
+    }
+
   private final Parser parser;
 
   /** Constructor */
@@ -123,7 +175,7 @@ class CUP$Parser$actions {
               Object RESULT =null;
 		int start_valleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int start_valright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
-		Object start_val = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		Nodo start_val = (Nodo)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		RESULT = start_val;
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("$START",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -132,11 +184,48 @@ class CUP$Parser$actions {
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 1: // programa ::= 
+          case 1: // programa ::= metodo_main 
             {
-              Object RESULT =null;
+              Nodo RESULT =null;
+		int mleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int mright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Nodo m = (Nodo)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+        System.out.println("\n[PARSER] Programa reconocido correctamente");
+        parser.arbolSintactico = m;
+        RESULT = m;
+    
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("programa",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
 
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("programa",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 2: // metodo_main ::= GIFT COAL NAVIDAD PAREN_IZQ PAREN_DER bloque 
+            {
+              Nodo RESULT =null;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Nodo b = (Nodo)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+        Nodo nodo = new Nodo("metodo_main", "NAVIDAD");
+        nodo.agregarHijo(new Nodo("gift", "PALABRA_RESERVADA"));
+        nodo.agregarHijo(new Nodo("coal", "TIPO"));
+        nodo.agregarHijo(new Nodo("navidad", "NOMBRE"));
+        nodo.agregarHijo(b);
+        RESULT = nodo;
+    
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("metodo_main",5, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 3: // bloque ::= LLAVE_IZQ LLAVE_DER 
+            {
+              Nodo RESULT =null;
+		
+        RESULT = new Nodo("bloque_vacio", "BLOQUE");
+    
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("bloque",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 

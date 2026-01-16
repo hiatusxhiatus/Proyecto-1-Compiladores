@@ -1,44 +1,141 @@
 package parser;
 
 import java_cup.runtime.*;
+import utils.Nodo;
+import utils.TablaSimbolos;
+import java.util.ArrayList;
+import java.util.List;
 
+// Codigo del parser
 parser code {:
+    // Lista de tablas de simbolos
+    public List<TablaSimbolos> tablasSimbolos = new ArrayList<>();
+    public TablaSimbolos tablaActual = null;
+    public Nodo arbolSintactico = null;
+    
+    // Manejo de errores sintacticos
     public void syntax_error(Symbol s) {
-        System.err.println("Error sintactico en linea " + (s.left+1) + ", columna " + (s.right+1));
+        System.err.println("[ERROR SINTACTICO] Linea " + (s.left) + 
+                          ", Columna " + (s.right) + 
+                          " - Token inesperado: " + s.value);
+    }
+    
+    // Error no recuperable
+    public void unrecovered_syntax_error(Symbol s) {
+        System.err.println("[ERROR FATAL] No se pudo recuperar del error sintactico");
+        System.err.println("Linea " + (s.left) + ", Columna " + (s.right));
+    }
+    
+    // Imprimir tablas de simbolos
+    public void imprimirTablas() {
+        System.out.println("\n========== TABLAS DE SIMBOLOS ==========");
+        for (TablaSimbolos tabla : tablasSimbolos) {
+            tabla.imprimir();
+        }
+        System.out.println("=========================================\n");
     }
 :};
 
-// terminales - palabras reservadas
+// Codigo de accion (se ejecuta antes del parsing)
+action code {:
+    // Helper para crear nodos
+    private Nodo crearNodo(String lexema, String tipo) {
+        return new Nodo(lexema, tipo);
+    }
+    
+    private Nodo crearNodoConHijos(String lexema, String tipo, Nodo... hijos) {
+        List<Nodo> listaHijos = new ArrayList<>();
+        for (Nodo hijo : hijos) {
+            if (hijo != null) {
+                listaHijos.add(hijo);
+            }
+        }
+        return new Nodo(lexema, tipo, listaHijos);
+    }
+:};
+
+/* =============== TERMINALES =============== */
+
+// Palabras reservadas
 terminal WORLD, LOCAL, DECIDE, OF, ELSE, END, LOOP, EXIT, WHEN;
 terminal FOR, RETURN, BREAK, SHOW, GET, GIFT, NAVIDAD, COAL, ENDL;
 
-// tipos
+// Tipos
 terminal INT, FLOAT, BOOLEAN, CHAR, STRING;
 
-// operadores aritmeticos
+// Operadores aritmeticos
 terminal MAS, MENOS, MULT, DIV, DIV_ENTERA, MODULO, POTENCIA;
 terminal INCREMENTO, DECREMENTO;
 
-// operadores relacionales
+// Operadores relacionales
 terminal MENOR, MENOR_IGUAL, MAYOR, MAYOR_IGUAL, IGUAL_IGUAL, DIFERENTE;
 
-// operadores logicos
+// Operadores logicos
 terminal AND, OR, NOT;
 
-// simbolos
+// Simbolos
 terminal PAREN_IZQ, PAREN_DER;
 terminal LLAVE_IZQ, LLAVE_DER;
 terminal CORCHETE_IZQ, CORCHETE_DER;
 terminal FLECHA, COMA, ASIGNACION;
 
-// literales
+// Literales
 terminal Integer INT_LIT;
 terminal Double FLOAT_LIT;
-terminal String ID, STRING_LIT, CHAR_LIT;
-terminal String BOOL_LIT;
+terminal String ID, STRING_LIT, CHAR_LIT, BOOL_LIT;
 
-non terminal programa;
+/* =============== NO TERMINALES =============== */
+
+non terminal Nodo programa;
+non terminal Nodo declaraciones_globales, declaracion_global;
+non terminal Nodo procedimientos, procedimiento;
+non terminal Nodo metodo_main;
+non terminal Nodo parametros, lista_parametros, parametro;
+non terminal Nodo tipo;
+non terminal Nodo bloque, sentencias, sentencia;
+non terminal Nodo lista_ids;
+
+// Precedencia de operadores (de menor a mayor)
+precedence left OR;
+precedence left AND;
+precedence left IGUAL_IGUAL, DIFERENTE;
+precedence left MENOR, MENOR_IGUAL, MAYOR, MAYOR_IGUAL;
+precedence left MAS, MENOS;
+precedence left MULT, DIV, DIV_ENTERA, MODULO;
+precedence right POTENCIA;
+precedence right NOT, INCREMENTO, DECREMENTO;
+
+/* =============== GRAMATICA =============== */
 
 start with programa;
 
-programa ::= ;
+// Programa principal (MINIMO para compilar)
+programa ::= 
+    metodo_main:m
+    {:
+        System.out.println("\n[PARSER] Programa reconocido correctamente");
+        parser.arbolSintactico = m;
+        RESULT = m;
+    :}
+    ;
+
+// Metodo main
+metodo_main ::=
+    GIFT COAL NAVIDAD PAREN_IZQ PAREN_DER bloque:b
+    {:
+        Nodo nodo = new Nodo("metodo_main", "NAVIDAD");
+        nodo.agregarHijo(new Nodo("gift", "PALABRA_RESERVADA"));
+        nodo.agregarHijo(new Nodo("coal", "TIPO"));
+        nodo.agregarHijo(new Nodo("navidad", "NOMBRE"));
+        nodo.agregarHijo(b);
+        RESULT = nodo;
+    :}
+    ;
+
+// Bloque (MINIMO)
+bloque ::=
+    LLAVE_IZQ LLAVE_DER
+    {:
+        RESULT = new Nodo("bloque_vacio", "BLOQUE");
+    :}
+    ;
