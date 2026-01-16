@@ -1,5 +1,5 @@
 # Gramatica BNF
-# Trabajo en clase
+# Proyecto 2 - Compiladores
 # Daniel Zeas Brown
 
 // programa principal
@@ -34,7 +34,7 @@ sentencias ::= sentencias sentencia | ε
 
 sentencia ::= declaracion_local | asignacion | expresion ENDL 
     | estructura_control | RETURN expresion ENDL | RETURN ENDL 
-    | BREAK ENDL | entrada_salida | bloque
+    | BREAK ENDL | entrada_salida
 
 // declaracion de variables locales  
 declaracion_local ::= LOCAL tipo lista_ids ENDL
@@ -45,7 +45,11 @@ declaracion_local ::= LOCAL tipo lista_ids ENDL
 asignacion ::= ID ASIGNACION expresion ENDL
     | ID CORCHETE_IZQ expresion CORCHETE_DER CORCHETE_IZQ expresion CORCHETE_DER ASIGNACION expresion ENDL
 
-inicializacion_arreglo ::= LLAVE_IZQ lista_expresiones LLAVE_DER | lista_expresiones
+inicializacion_arreglo ::= fila_arreglo
+    | inicializacion_arreglo COMA fila_arreglo
+
+fila_arreglo ::= LLAVE_IZQ lista_expresiones LLAVE_DER
+
 lista_expresiones ::= lista_expresiones COMA expresion | expresion
 
 // estructuras de control
@@ -57,18 +61,20 @@ decide_of ::= DECIDE OF casos END DECIDE ENDL
 casos ::= casos caso | caso
 caso ::= expresion FLECHA bloque
 
-loop_structure ::= LOOP sentencias EXIT WHEN expresion ENDL END LOOP ENDL
+loop_structure ::= LOOP sentencias EXIT WHEN expresion ENDL sentencias END LOOP ENDL
 
 for_structure ::= FOR PAREN_IZQ asignacion_for expresion ENDL expresion PAREN_DER bloque
 asignacion_for ::= tipo ID ASIGNACION expresion ENDL | ID ASIGNACION expresion ENDL
 
 // entrada y salida
-entrada_salida ::= SHOW PAREN_IZQ argumentos PAREN_DER ENDL | GET PAREN_IZQ ID PAREN_DER ENDL
+entrada_salida ::= SHOW PAREN_IZQ argumentos PAREN_DER ENDL 
+    | GET PAREN_IZQ ID PAREN_DER ENDL
+
 argumentos ::= lista_argumentos | ε
 lista_argumentos ::= lista_argumentos COMA argumento | argumento
 argumento ::= expresion | STRING_LIT
 
-// expresiones
+// expresiones (con precedencia correcta)
 expresion ::= expresion_logica
 
 expresion_logica ::= expresion_logica OR expresion_and | expresion_and
@@ -77,16 +83,31 @@ expresion_and ::= expresion_and AND expresion_relacional | expresion_relacional
 expresion_relacional ::= expresion_aritmetica op_relacional expresion_aritmetica | expresion_aritmetica
 op_relacional ::= MENOR | MENOR_IGUAL | MAYOR | MAYOR_IGUAL | IGUAL_IGUAL | DIFERENTE
 
-expresion_aritmetica ::= expresion_aritmetica MAS termino | expresion_aritmetica MENOS termino | termino
+expresion_aritmetica ::= expresion_aritmetica MAS termino 
+    | expresion_aritmetica MENOS termino 
+    | termino
 
-termino ::= termino MULT factor | termino DIV factor | termino DIV_ENTERA factor | termino MODULO factor | factor
+termino ::= termino MULT factor 
+    | termino DIV factor 
+    | termino DIV_ENTERA factor 
+    | termino MODULO factor 
+    | factor
 
 factor ::= base POTENCIA factor | base
 
-base ::= INCREMENTO ID | DECREMENTO ID | MENOS base | NOT base | primario
+base ::= INCREMENTO ID 
+    | DECREMENTO ID 
+    | MENOS base 
+    | NOT base 
+    | primario
 
-primario ::= INT_LIT | FLOAT_LIT | BOOL_LIT | CHAR_LIT | ID 
+primario ::= INT_LIT 
+    | FLOAT_LIT 
+    | BOOL_LIT 
+    | CHAR_LIT 
+    | ID 
     | ID CORCHETE_IZQ expresion CORCHETE_DER CORCHETE_IZQ expresion CORCHETE_DER 
-    | llamada_funcion | PAREN_IZQ expresion PAREN_DER
+    | llamada_funcion 
+    | PAREN_IZQ expresion PAREN_DER
 
 llamada_funcion ::= ID PAREN_IZQ argumentos PAREN_DER
