@@ -1,0 +1,69 @@
+==============================================
+  COMPILADOR - PROYECTO 2
+  Archivo: test/prueba1.txt
+==============================================
+
+[INICIO] Analizando archivo...
+
+[PARSER] Programa reconocido exitosamente
+
+=== ARBOL SINTACTICO ===
+PROGRAMA: programa
+└─ MAIN: navidad
+   ├─ TIPO: coal
+   ├─ NOMBRE: navidad
+   └─ BLOQUE: bloque
+      └─ SENTENCIAS: sentencias
+         ├─ LOCAL: decl_local_asign
+         │  ├─ TIPO: int
+         │  ├─ IDS: lista_ids
+         │  │  └─ ID: contador
+         │  ├─ ASIGNACION: =
+         │  └─ INT_LIT: 0
+         ├─ LOCAL: decl_local_asign
+         │  ├─ TIPO: float
+         │  ├─ IDS: lista_ids
+         │  │  └─ ID: precio
+         │  ├─ ASIGNACION: =
+         │  └─ FLOAT_LIT: 99.99
+         ├─ LOCAL: decl_local_asign
+         │  ├─ TIPO: boolean
+         │  ├─ IDS: lista_ids
+         │  │  └─ ID: activo
+         │  ├─ ASIGNACION: =
+         │  └─ BOOL_LIT: true
+         ├─ ASIGNACION: asignacion
+         │  ├─ ID: contador
+         │  ├─ OP_ASIG: =
+         │  └─ OP_SUMA: +
+         │     ├─ ID: contador
+         │     └─ INT_LIT: 1
+         ├─ ASIGNACION: asignacion
+         │  ├─ ID: precio
+         │  ├─ OP_ASIG: =
+         │  └─ OP_MULT: *
+         │     ├─ ID: precio
+         │     └─ FLOAT_LIT: 1.15
+         └─ SHOW: show
+            └─ ARGS: argumentos
+               └─ ID: contador
+========================
+
+
+========================================
+      TABLAS DE SIMBOLOS
+========================================
+
+--- Tabla de Simbolos: navidad ---
+NOMBRE               TIPO            LINEA      COLUMNA   
+---------------------------------------------------------------
+precio               float           0          0         
+contador             int             0          0         
+activo               boolean         0          0         
+---------------------------------------------------------------
+Total de simbolos: 3
+
+========================================
+
+
+[EXITO] Analisis completado sin errores

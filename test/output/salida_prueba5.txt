@@ -1,0 +1,86 @@
+==============================================
+  COMPILADOR - PROYECTO 2
+  Archivo: test/prueba3.txt
+==============================================
+
+[INICIO] Analizando archivo...
+
+[PARSER] Programa reconocido exitosamente
+
+=== ARBOL SINTACTICO ===
+PROGRAMA: programa
+├─ DECL_GLOBALES: declaraciones_globales
+│  └─ WORLD: decl_global_asign
+│     ├─ PALABRA_RESERVADA: world
+│     ├─ TIPO: int
+│     ├─ IDS: lista_ids
+│     │  └─ ID: resultado
+│     ├─ ASIGNACION: =
+│     └─ INT_LIT: 0
+├─ PROCEDIMIENTOS: procedimientos
+│  └─ GIFT: funcion_calcular
+│     ├─ PALABRA_RESERVADA: gift
+│     ├─ TIPO: int
+│     ├─ ID: calcular
+│     ├─ PARAMS: parametros
+│     │  ├─ PARAMETRO: param_a
+│     │  │  ├─ TIPO: int
+│     │  │  └─ ID: a
+│     │  └─ PARAMETRO: param_b
+│     │     ├─ TIPO: int
+│     │     └─ ID: b
+│     └─ BLOQUE: bloque
+│        └─ SENTENCIAS: sentencias
+│           ├─ LOCAL: decl_local_asign
+│           │  ├─ TIPO: int
+│           │  ├─ IDS: lista_ids
+│           │  │  └─ ID: temp
+│           │  ├─ ASIGNACION: =
+│           │  └─ OP_SUMA: +
+│           │     ├─ ID: a
+│           │     └─ ID: b
+│           └─ RETURN: return
+│              └─ ID: temp
+└─ MAIN: navidad
+   ├─ TIPO: coal
+   ├─ NOMBRE: navidad
+   └─ BLOQUE: bloque
+      └─ SENTENCIAS: sentencias
+         ├─ ERROR: error_sentencia
+         ├─ LOCAL: decl_local_asign
+         │  ├─ TIPO: int
+         │  ├─ IDS: lista_ids
+         │  │  └─ ID: i
+         │  ├─ ASIGNACION: =
+         │  └─ INT_LIT: 0
+         ├─ ERROR: error_sentencia
+         └─ SHOW: show
+            └─ ARGS: argumentos
+               └─ ID: resultado
+========================
+
+
+========================================
+      TABLAS DE SIMBOLOS
+========================================
+
+--- Tabla de Simbolos: funcion_calcular ---
+NOMBRE               TIPO            LINEA      COLUMNA   
+---------------------------------------------------------------
+a                    int             0          0         
+b                    int             0          0         
+---------------------------------------------------------------
+Total de simbolos: 2
+
+
+--- Tabla de Simbolos: navidad ---
+NOMBRE               TIPO            LINEA      COLUMNA   
+---------------------------------------------------------------
+i                    int             0          0         
+---------------------------------------------------------------
+Total de simbolos: 1
+
+========================================
+
+
+[EXITO] Analisis completado sin errores

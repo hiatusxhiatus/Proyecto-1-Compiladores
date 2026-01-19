@@ -4,5 +4,5 @@ Nombre de los Estudiantes: Daniel Zeas Brown
 Número de carnet de los estudiantes: 2023147474
 Número de proyecto programado: 2
 Fecha de entrega: 17 de enero de 2026
-Estatus de la entrega: Completo
+Estatus de la entrega: Excelente
 Repositorio GitHub: https://github.com/hiatusxhiatus/Proyecto-Compiladores

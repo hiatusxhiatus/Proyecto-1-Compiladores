@@ -1,0 +1,115 @@
+==============================================
+  COMPILADOR - PROYECTO 2
+  Archivo: test/prueba4.txt
+==============================================
+
+[INICIO] Analizando archivo...
+
+[PARSER] Programa reconocido exitosamente
+
+=== ARBOL SINTACTICO ===
+PROGRAMA: programa
+└─ MAIN: navidad
+   ├─ TIPO: coal
+   ├─ NOMBRE: navidad
+   └─ BLOQUE: bloque
+      └─ SENTENCIAS: sentencias
+         ├─ LOCAL: decl_local_asign
+         │  ├─ TIPO: int
+         │  ├─ IDS: lista_ids
+         │  │  └─ ID: x
+         │  ├─ ASIGNACION: =
+         │  └─ INT_LIT: 10
+         ├─ LOCAL: decl_local_asign
+         │  ├─ TIPO: int
+         │  ├─ IDS: lista_ids
+         │  │  └─ ID: y
+         │  ├─ ASIGNACION: =
+         │  └─ INT_LIT: 20
+         ├─ LOCAL: decl_local_asign
+         │  ├─ TIPO: float
+         │  ├─ IDS: lista_ids
+         │  │  └─ ID: z
+         │  ├─ ASIGNACION: =
+         │  └─ FLOAT_LIT: 5.5
+         ├─ LOCAL: decl_local
+         │  ├─ TIPO: boolean
+         │  └─ IDS: lista_ids
+         │     └─ ID: resultado
+         ├─ ASIGNACION: asignacion
+         │  ├─ ID: x
+         │  ├─ OP_ASIG: =
+         │  └─ OP_MULT: *
+         │     ├─ EXPR_PAREN: expr_paren
+         │     │  └─ OP_SUMA: +
+         │     │     ├─ ID: x
+         │     │     └─ ID: y
+         │     └─ INT_LIT: 2
+         ├─ ASIGNACION: asignacion
+         │  ├─ ID: z
+         │  ├─ OP_ASIG: =
+         │  └─ OP_DIV_ENTERA: //
+         │     ├─ ID: z
+         │     └─ FLOAT_LIT: 2.0
+         ├─ ASIGNACION: asignacion
+         │  ├─ ID: resultado
+         │  ├─ OP_ASIG: =
+         │  └─ OP_AND: and
+         │     ├─ EXPR_PAREN: expr_paren
+         │     │  └─ OP_MAYOR_IGUAL: >=
+         │     │     ├─ ID: x
+         │     │     └─ ID: y
+         │     └─ EXPR_PAREN: expr_paren
+         │        └─ OP_MENOR_IGUAL: <=
+         │           ├─ ID: z
+         │           └─ FLOAT_LIT: 3.0
+         ├─ ASIGNACION: asignacion
+         │  ├─ ID: resultado
+         │  ├─ OP_ASIG: =
+         │  └─ OP_NOT: !
+         │     └─ ID: resultado
+         ├─ LOCAL: decl_local_asign
+         │  ├─ TIPO: int
+         │  ├─ IDS: lista_ids
+         │  │  └─ ID: potencia
+         │  ├─ ASIGNACION: =
+         │  └─ OP_POTENCIA: ^
+         │     ├─ ID: x
+         │     └─ INT_LIT: 2
+         ├─ LOCAL: decl_local_asign
+         │  ├─ TIPO: int
+         │  ├─ IDS: lista_ids
+         │  │  └─ ID: modulo
+         │  ├─ ASIGNACION: =
+         │  └─ OP_MODULO: %
+         │     ├─ ID: y
+         │     └─ INT_LIT: 3
+         ├─ SHOW: show
+         │  └─ ARGS: argumentos
+         │     └─ ID: potencia
+         └─ SHOW: show
+            └─ ARGS: argumentos
+               └─ ID: modulo
+========================
+
+
+========================================
+      TABLAS DE SIMBOLOS
+========================================
+
+--- Tabla de Simbolos: navidad ---
+NOMBRE               TIPO            LINEA      COLUMNA   
+---------------------------------------------------------------
+potencia             int             0          0         
+resultado            boolean         0          0         
+x                    int             0          0         
+y                    int             0          0         
+z                    float           0          0         
+modulo               int             0          0         
+---------------------------------------------------------------
+Total de simbolos: 6
+
+========================================
+
+
+[EXITO] Analisis completado sin errores
