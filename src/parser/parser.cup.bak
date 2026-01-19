@@ -296,6 +296,7 @@ crear_tabla_main ::=
     /* epsilon */
     {:
         parser.nuevaTabla("navidad");
+        System.out.println("[DEBUG] Tabla 'navidad' creada!");
     :}
     ;
 
@@ -411,13 +412,19 @@ sentencia ::=
 declaracion_local ::=
     LOCAL tipo:t lista_ids:ids ENDL
     {:
+        System.out.println("[DEBUG] Declaracion local detectada");
+        System.out.println("[DEBUG] tablaActual es null? " + (parser.tablaActual == null));
+        System.out.println("[DEBUG] ids es null? " + (ids == null));
         
         if (parser.tablaActual != null && ids != null && ids.tieneHijos()) {
+            System.out.println("[DEBUG] Entrando a agregar simbolos...");
             for (Nodo idNode : ids.getHijos()) {
                 String nombreVar = idNode.getLexema();
                 String tipoVar = t.getLexema();
+                System.out.println("[DEBUG] Agregando: " + nombreVar + " tipo: " + tipoVar);
                 if (!parser.tablaActual.existe(nombreVar)) {
                     parser.tablaActual.agregar(nombreVar, tipoVar, 0, 0);
+                    System.out.println("[DEBUG] Agregado exitosamente!");
                 }
             }
         }
@@ -429,13 +436,18 @@ declaracion_local ::=
     :}
     | LOCAL tipo:t lista_ids:ids ASIGNACION expresion:e ENDL
     {:
+        System.out.println("[DEBUG] Declaracion local con asignacion detectada");
+        System.out.println("[DEBUG] tablaActual es null? " + (parser.tablaActual == null));
         
         if (parser.tablaActual != null && ids != null && ids.tieneHijos()) {
+            System.out.println("[DEBUG] Entrando a agregar simbolos...");
             for (Nodo idNode : ids.getHijos()) {
                 String nombreVar = idNode.getLexema();
                 String tipoVar = t.getLexema();
+                System.out.println("[DEBUG] Agregando: " + nombreVar + " tipo: " + tipoVar);
                 if (!parser.tablaActual.existe(nombreVar)) {
                     parser.tablaActual.agregar(nombreVar, tipoVar, 0, 0);
+                    System.out.println("[DEBUG] Agregado exitosamente!");
                 }
             }
         }

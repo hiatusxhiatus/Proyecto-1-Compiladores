@@ -2,7 +2,7 @@ Nombre del curso: Compiladores e Intérpretes
 Número de semestre y año lectivo: Verano 2025/2026
 Nombre de los Estudiantes: Daniel Zeas Brown
 Número de carnet de los estudiantes: 2023147474
-Número de proyecto programado: 1
-Fecha de entrega: 26 de diciembre de 2025
-Estatus de la entrega: Excelente
-Repositorio GitHub: https://github.com/hiatusxhiatus/Proyecto-1-Compiladores
+Número de proyecto programado: 2
+Fecha de entrega: 17 de enero de 2026
+Estatus de la entrega: Completo
+Repositorio GitHub: https://github.com/hiatusxhiatus/Proyecto-Compiladores
