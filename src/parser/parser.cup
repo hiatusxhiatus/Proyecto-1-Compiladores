@@ -12,90 +12,102 @@ parser code {:
     public List<TablaSimbolos> tablasSimbolos = new ArrayList<>();
     public TablaSimbolos tablaActual = null;
     public Nodo arbolSintactico = null;
+    private int contadorScopes = 0;
     
-    // Manejo de errores sintacticos
+    // Manejo de errores sintacticos con modo panico
     public void syntax_error(Symbol s) {
-        System.err.println("[ERROR SINTACTICO] Linea " + (s.left) + 
-                          ", Columna " + (s.right) + 
-                          " - Token inesperado: " + s.value);
+        System.err.println("\n[ERROR SINTACTICO] Linea " + (s.left) + 
+                          ", Columna " + (s.right));
+        if (s.value != null) {
+            System.err.println("Token inesperado: " + s.value);
+        }
+        System.err.println("Recuperando del error...\n");
     }
     
     // Error no recuperable
     public void unrecovered_syntax_error(Symbol s) {
-        System.err.println("[ERROR FATAL] No se pudo recuperar del error sintactico");
+        System.err.println("\n[ERROR FATAL] No se pudo recuperar del error sintactico");
         System.err.println("Linea " + (s.left) + ", Columna " + (s.right));
+        System.err.println("Abortando analisis.\n");
+    }
+    
+    // Crear nueva tabla de simbolos
+    public void nuevaTabla(String nombre) {
+        tablaActual = new TablaSimbolos(nombre);
+        tablasSimbolos.add(tablaActual);
     }
     
     // Imprimir tablas de simbolos
     public void imprimirTablas() {
-        System.out.println("\n========== TABLAS DE SIMBOLOS ==========");
+        if (tablasSimbolos.isEmpty()) {
+            System.out.println("\n[INFO] No hay tablas de simbolos generadas\n");
+            return;
+        }
+        
+        System.out.println("\n========================================");
+        System.out.println("      TABLAS DE SIMBOLOS");
+        System.out.println("========================================");
         for (TablaSimbolos tabla : tablasSimbolos) {
             tabla.imprimir();
         }
-        System.out.println("=========================================\n");
+        System.out.println("========================================\n");
     }
 :};
 
-// Codigo de accion (se ejecuta antes del parsing)
+// Codigo de accion
 action code {:
-    // Helper para crear nodos
-    private Nodo crearNodo(String lexema, String tipo) {
+    // Helper para crear nodos simples
+    private Nodo nodo(String lexema, String tipo) {
         return new Nodo(lexema, tipo);
     }
     
-    private Nodo crearNodoConHijos(String lexema, String tipo, Nodo... hijos) {
-        List<Nodo> listaHijos = new ArrayList<>();
-        for (Nodo hijo : hijos) {
-            if (hijo != null) {
-                listaHijos.add(hijo);
-            }
+    // Helper para crear nodos con hijos
+    private Nodo nodoH(String lexema, String tipo, Nodo... hijos) {
+        List<Nodo> lista = new ArrayList<>();
+        for (Nodo h : hijos) {
+            if (h != null) lista.add(h);
         }
-        return new Nodo(lexema, tipo, listaHijos);
+        return new Nodo(lexema, tipo, lista);
+    }
+    
+    // Helper para agregar hijo a nodo
+    private void agregar(Nodo padre, Nodo hijo) {
+        if (padre != null && hijo != null) {
+            padre.agregarHijo(hijo);
+        }
     }
 :};
 
 /* =============== TERMINALES =============== */
-
-// Palabras reservadas
 terminal WORLD, LOCAL, DECIDE, OF, ELSE, END, LOOP, EXIT, WHEN;
 terminal FOR, RETURN, BREAK, SHOW, GET, GIFT, NAVIDAD, COAL, ENDL;
-
-// Tipos
 terminal INT, FLOAT, BOOLEAN, CHAR, STRING;
-
-// Operadores aritmeticos
 terminal MAS, MENOS, MULT, DIV, DIV_ENTERA, MODULO, POTENCIA;
 terminal INCREMENTO, DECREMENTO;
-
-// Operadores relacionales
 terminal MENOR, MENOR_IGUAL, MAYOR, MAYOR_IGUAL, IGUAL_IGUAL, DIFERENTE;
-
-// Operadores logicos
 terminal AND, OR, NOT;
-
-// Simbolos
-terminal PAREN_IZQ, PAREN_DER;
-terminal LLAVE_IZQ, LLAVE_DER;
-terminal CORCHETE_IZQ, CORCHETE_DER;
-terminal FLECHA, COMA, ASIGNACION;
-
-// Literales
+terminal PAREN_IZQ, PAREN_DER, LLAVE_IZQ, LLAVE_DER;
+terminal CORCHETE_IZQ, CORCHETE_DER, FLECHA, COMA, ASIGNACION;
 terminal Integer INT_LIT;
 terminal Double FLOAT_LIT;
 terminal String ID, STRING_LIT, CHAR_LIT, BOOL_LIT;
 
 /* =============== NO TERMINALES =============== */
-
-non terminal Nodo programa;
-non terminal Nodo declaraciones_globales, declaracion_global;
-non terminal Nodo procedimientos, procedimiento;
-non terminal Nodo metodo_main;
+non terminal Nodo programa, declaraciones_globales, declaracion_global;
+non terminal Nodo procedimientos, procedimiento, metodo_main;
 non terminal Nodo parametros, lista_parametros, parametro;
-non terminal Nodo tipo;
+non terminal Nodo lista_ids, tipo;
 non terminal Nodo bloque, sentencias, sentencia;
-non terminal Nodo lista_ids;
+non terminal Nodo declaracion_local, asignacion;
+non terminal Nodo inicializacion_arreglo, fila_arreglo, lista_expresiones;
+non terminal Nodo estructura_control, decide_of, loop_structure, for_structure;
+non terminal Nodo casos, caso, asignacion_for;
+non terminal Nodo entrada_salida, argumentos, lista_argumentos, argumento;
+non terminal Nodo expresion, expresion_logica, expresion_and, expresion_relacional;
+non terminal Nodo op_relacional, expresion_aritmetica, termino, factor, base, primario;
+non terminal Nodo llamada_funcion;
 
-// Precedencia de operadores (de menor a mayor)
+/* =============== PRECEDENCIA =============== */
 precedence left OR;
 precedence left AND;
 precedence left IGUAL_IGUAL, DIFERENTE;
@@ -105,37 +117,715 @@ precedence left MULT, DIV, DIV_ENTERA, MODULO;
 precedence right POTENCIA;
 precedence right NOT, INCREMENTO, DECREMENTO;
 
-/* =============== GRAMATICA =============== */
-
 start with programa;
 
-// Programa principal (MINIMO para compilar)
+/* =============== GRAMATICA =============== */
+
+// Programa principal
 programa ::= 
-    metodo_main:m
+    declaraciones_globales:dg procedimientos:p metodo_main:m
     {:
-        System.out.println("\n[PARSER] Programa reconocido correctamente");
-        parser.arbolSintactico = m;
-        RESULT = m;
+        Nodo n = nodo("programa", "PROGRAMA");
+        agregar(n, dg);
+        agregar(n, p);
+        agregar(n, m);
+        parser.arbolSintactico = n;
+        System.out.println("[PARSER] Programa reconocido exitosamente");
+        RESULT = n;
+    :}
+    | procedimientos:p metodo_main:m
+    {:
+        Nodo n = nodo("programa", "PROGRAMA");
+        agregar(n, p);
+        agregar(n, m);
+        parser.arbolSintactico = n;
+        System.out.println("[PARSER] Programa reconocido exitosamente");
+        RESULT = n;
+    :}
+    | declaraciones_globales:dg metodo_main:m
+    {:
+        Nodo n = nodo("programa", "PROGRAMA");
+        agregar(n, dg);
+        agregar(n, m);
+        parser.arbolSintactico = n;
+        System.out.println("[PARSER] Programa reconocido exitosamente");
+        RESULT = n;
+    :}
+    | metodo_main:m
+    {:
+        Nodo n = nodo("programa", "PROGRAMA");
+        agregar(n, m);
+        parser.arbolSintactico = n;
+        System.out.println("[PARSER] Programa reconocido exitosamente");
+        RESULT = n;
+    :}
+    | error
+    {:
+        System.err.println("[ERROR] Estructura de programa invalida");
+        RESULT = nodo("error_programa", "ERROR");
+    :}
+    ;
+
+// Declaraciones globales
+declaraciones_globales ::=
+    declaraciones_globales:dg declaracion_global:d
+    {:
+        agregar(dg, d);
+        RESULT = dg;
+    :}
+    | declaracion_global:d
+    {:
+        Nodo n = nodo("declaraciones_globales", "DECL_GLOBALES");
+        agregar(n, d);
+        RESULT = n;
+    :}
+    ;
+
+declaracion_global ::=
+    WORLD tipo:t lista_ids:ids ENDL
+    {:
+        Nodo n = nodo("decl_global", "WORLD");
+        agregar(n, nodo("world", "PALABRA_RESERVADA"));
+        agregar(n, t);
+        agregar(n, ids);
+        RESULT = n;
+    :}
+    | WORLD tipo:t lista_ids:ids ASIGNACION expresion:e ENDL
+    {:
+        Nodo n = nodo("decl_global_asign", "WORLD");
+        agregar(n, nodo("world", "PALABRA_RESERVADA"));
+        agregar(n, t);
+        agregar(n, ids);
+        agregar(n, nodo("=", "ASIGNACION"));
+        agregar(n, e);
+        RESULT = n;
+    :}
+    | WORLD tipo:t ID:id CORCHETE_IZQ INT_LIT:i1 CORCHETE_DER 
+      CORCHETE_IZQ INT_LIT:i2 CORCHETE_DER ENDL
+    {:
+        Nodo n = nodo("decl_arreglo_global", "WORLD_ARRAY");
+        agregar(n, t);
+        agregar(n, nodo(id, "ID"));
+        agregar(n, nodo(i1.toString(), "DIM1"));
+        agregar(n, nodo(i2.toString(), "DIM2"));
+        RESULT = n;
+    :}
+    | WORLD tipo:t ID:id CORCHETE_IZQ INT_LIT:i1 CORCHETE_DER 
+      CORCHETE_IZQ INT_LIT:i2 CORCHETE_DER ASIGNACION 
+      LLAVE_IZQ inicializacion_arreglo:init LLAVE_DER ENDL
+    {:
+        Nodo n = nodo("decl_arreglo_global_asign", "WORLD_ARRAY");
+        agregar(n, t);
+        agregar(n, nodo(id, "ID"));
+        agregar(n, nodo(i1.toString(), "DIM1"));
+        agregar(n, nodo(i2.toString(), "DIM2"));
+        agregar(n, init);
+        RESULT = n;
+    :}
+    | error ENDL
+    {:
+        System.err.println("[ERROR] Declaracion global invalida, recuperando...");
+        RESULT = nodo("error_decl_global", "ERROR");
+    :}
+    ;
+
+// Procedimientos
+procedimientos ::=
+    procedimientos:ps procedimiento:p
+    {:
+        agregar(ps, p);
+        RESULT = ps;
+    :}
+    | procedimiento:p
+    {:
+        Nodo n = nodo("procedimientos", "PROCEDIMIENTOS");
+        agregar(n, p);
+        RESULT = n;
+    :}
+    ;
+
+procedimiento ::=
+    GIFT tipo:t ID:id PAREN_IZQ parametros:params PAREN_DER bloque:b
+    {:
+        parser.nuevaTabla("funcion_" + id);
+        
+        if (parser.tablaActual != null && params.tieneHijos()) {
+            for (Nodo paramNode : params.getHijos()) {
+                for (Nodo hijo : paramNode.getHijos()) {
+                    if (hijo.getTipo().equals("ID")) {
+                        String tipoParam = paramNode.getHijos().get(0).getLexema();
+                        parser.tablaActual.agregar(hijo.getLexema(), tipoParam, 0, 0);
+                    }
+                }
+            }
+        }
+        
+        Nodo n = nodo("funcion_" + id, "GIFT");
+        agregar(n, nodo("gift", "PALABRA_RESERVADA"));
+        agregar(n, t);
+        agregar(n, nodo(id, "ID"));
+        agregar(n, params);
+        agregar(n, b);
+        RESULT = n;
+    :}
+    | error LLAVE_DER
+    {:
+        System.err.println("[ERROR] Declaracion de funcion invalida, recuperando...");
+        RESULT = nodo("error_funcion", "ERROR");
     :}
     ;
 
 // Metodo main
 metodo_main ::=
-    GIFT COAL NAVIDAD PAREN_IZQ PAREN_DER bloque:b
+    COAL NAVIDAD PAREN_IZQ PAREN_DER bloque:b
     {:
-        Nodo nodo = new Nodo("metodo_main", "NAVIDAD");
-        nodo.agregarHijo(new Nodo("gift", "PALABRA_RESERVADA"));
-        nodo.agregarHijo(new Nodo("coal", "TIPO"));
-        nodo.agregarHijo(new Nodo("navidad", "NOMBRE"));
-        nodo.agregarHijo(b);
-        RESULT = nodo;
+        parser.nuevaTabla("navidad");
+        Nodo n = nodo("navidad", "MAIN");
+        agregar(n, nodo("coal", "TIPO"));
+        agregar(n, nodo("navidad", "NOMBRE"));
+        agregar(n, b);
+        RESULT = n;
     :}
     ;
 
-// Bloque (MINIMO)
-bloque ::=
-    LLAVE_IZQ LLAVE_DER
+// Parametros
+parametros ::=
+    lista_parametros:lp
+    {: RESULT = lp; :}
+    | /* epsilon */
+    {: RESULT = nodo("sin_parametros", "PARAMS"); :}
+    ;
+
+lista_parametros ::=
+    lista_parametros:lp COMA parametro:p
     {:
-        RESULT = new Nodo("bloque_vacio", "BLOQUE");
+        agregar(lp, p);
+        RESULT = lp;
+    :}
+    | parametro:p
+    {:
+        Nodo n = nodo("parametros", "PARAMS");
+        agregar(n, p);
+        RESULT = n;
     :}
     ;
+
+parametro ::=
+    tipo:t ID:id
+    {:
+        Nodo n = nodo("param_" + id, "PARAMETRO");
+        agregar(n, t);
+        agregar(n, nodo(id, "ID"));
+        RESULT = n;
+    :}
+    ;
+
+lista_ids ::=
+    lista_ids:l COMA ID:id
+    {:
+        agregar(l, nodo(id, "ID"));
+        RESULT = l;
+    :}
+    | ID:id
+    {:
+        Nodo n = nodo("lista_ids", "IDS");
+        agregar(n, nodo(id, "ID"));
+        RESULT = n;
+    :}
+    ;
+
+tipo ::=
+    INT:t     {: RESULT = nodo("int", "TIPO"); :}
+    | FLOAT:t   {: RESULT = nodo("float", "TIPO"); :}
+    | BOOLEAN:t {: RESULT = nodo("boolean", "TIPO"); :}
+    | CHAR:t    {: RESULT = nodo("char", "TIPO"); :}
+    | STRING:t  {: RESULT = nodo("string", "TIPO"); :}
+    ;
+
+// Bloque
+bloque ::=
+    LLAVE_IZQ sentencias:s LLAVE_DER
+    {:
+        Nodo n = nodo("bloque", "BLOQUE");
+        agregar(n, s);
+        RESULT = n;
+    :}
+    | LLAVE_IZQ LLAVE_DER
+    {: RESULT = nodo("bloque_vacio", "BLOQUE"); :}
+    ;
+
+sentencias ::=
+    sentencias:ss sentencia:s
+    {:
+        agregar(ss, s);
+        RESULT = ss;
+    :}
+    | sentencia:s
+    {:
+        Nodo n = nodo("sentencias", "SENTENCIAS");
+        agregar(n, s);
+        RESULT = n;
+    :}
+    ;
+
+sentencia ::=
+    declaracion_local:d {: RESULT = d; :}
+    | asignacion:a {: RESULT = a; :}
+    | expresion:e ENDL
+    {:
+        Nodo n = nodo("expr_stmt", "SENTENCIA");
+        agregar(n, e);
+        RESULT = n;
+    :}
+    | estructura_control:ec {: RESULT = ec; :}
+    | RETURN expresion:e ENDL
+    {:
+        Nodo n = nodo("return", "RETURN");
+        agregar(n, e);
+        RESULT = n;
+    :}
+    | RETURN ENDL
+    {: RESULT = nodo("return_void", "RETURN"); :}
+    | BREAK ENDL
+    {: RESULT = nodo("break", "BREAK"); :}
+    | entrada_salida:es {: RESULT = es; :}
+    | error ENDL
+    {:
+        System.err.println("[ERROR] Sentencia invalida, recuperando...");
+        RESULT = nodo("error_sentencia", "ERROR");
+    :}
+    ;
+
+// Declaracion local
+declaracion_local ::=
+    LOCAL tipo:t lista_ids:ids ENDL
+    {:
+        if (parser.tablaActual != null) {
+            for (Nodo idNode : ids.getHijos()) {
+                if (!parser.tablaActual.existe(idNode.getLexema())) {
+                    parser.tablaActual.agregar(
+                        idNode.getLexema(),
+                        t.getLexema(),
+                        0, 0
+                    );
+                }
+            }
+        }
+        
+        Nodo n = nodo("decl_local", "LOCAL");
+        agregar(n, t);
+        agregar(n, ids);
+        RESULT = n;
+    :}
+    | LOCAL tipo:t lista_ids:ids ASIGNACION expresion:e ENDL
+    {:
+        if (parser.tablaActual != null) {
+            for (Nodo idNode : ids.getHijos()) {
+                if (!parser.tablaActual.existe(idNode.getLexema())) {
+                    parser.tablaActual.agregar(
+                        idNode.getLexema(),
+                        t.getLexema(),
+                        0, 0
+                    );
+                }
+            }
+        }
+        
+        Nodo n = nodo("decl_local_asign", "LOCAL");
+        agregar(n, t);
+        agregar(n, ids);
+        agregar(n, nodo("=", "ASIGNACION"));
+        agregar(n, e);
+        RESULT = n;
+    :}
+    | LOCAL tipo:t ID:id CORCHETE_IZQ INT_LIT:i1 CORCHETE_DER 
+      CORCHETE_IZQ INT_LIT:i2 CORCHETE_DER ENDL
+    {:
+        Nodo n = nodo("decl_array_local", "LOCAL_ARRAY");
+        agregar(n, t);
+        agregar(n, nodo(id, "ID"));
+        agregar(n, nodo(i1.toString(), "DIM1"));
+        agregar(n, nodo(i2.toString(), "DIM2"));
+        RESULT = n;
+    :}
+    | LOCAL tipo:t ID:id CORCHETE_IZQ INT_LIT:i1 CORCHETE_DER 
+      CORCHETE_IZQ INT_LIT:i2 CORCHETE_DER ASIGNACION 
+      LLAVE_IZQ inicializacion_arreglo:init LLAVE_DER ENDL
+    {:
+        Nodo n = nodo("decl_array_local_asign", "LOCAL_ARRAY");
+        agregar(n, t);
+        agregar(n, nodo(id, "ID"));
+        agregar(n, nodo(i1.toString(), "DIM1"));
+        agregar(n, nodo(i2.toString(), "DIM2"));
+        agregar(n, init);
+        RESULT = n;
+    :}
+    ;
+
+// Asignacion
+asignacion ::=
+    ID:id ASIGNACION expresion:e ENDL
+    {:
+        Nodo n = nodo("asignacion", "ASIGNACION");
+        agregar(n, nodo(id, "ID"));
+        agregar(n, nodo("=", "OP_ASIG"));
+        agregar(n, e);
+        RESULT = n;
+    :}
+    | ID:id CORCHETE_IZQ expresion:e1 CORCHETE_DER 
+      CORCHETE_IZQ expresion:e2 CORCHETE_DER ASIGNACION expresion:e3 ENDL
+    {:
+        Nodo n = nodo("asignacion_array", "ASIGNACION_ARRAY");
+        agregar(n, nodo(id, "ID"));
+        agregar(n, e1);
+        agregar(n, e2);
+        agregar(n, nodo("=", "OP_ASIG"));
+        agregar(n, e3);
+        RESULT = n;
+    :}
+    ;
+
+// Inicializacion arreglo
+inicializacion_arreglo ::=
+    fila_arreglo:f
+    {:
+        Nodo n = nodo("init_array", "INIT_ARRAY");
+        agregar(n, f);
+        RESULT = n;
+    :}
+    | inicializacion_arreglo:init COMA fila_arreglo:f
+    {:
+        agregar(init, f);
+        RESULT = init;
+    :}
+    ;
+
+fila_arreglo ::=
+    LLAVE_IZQ lista_expresiones:le LLAVE_DER
+    {:
+        Nodo n = nodo("fila", "FILA_ARRAY");
+        agregar(n, le);
+        RESULT = n;
+    :}
+    ;
+
+lista_expresiones ::=
+    lista_expresiones:le COMA expresion:e
+    {:
+        agregar(le, e);
+        RESULT = le;
+    :}
+    | expresion:e
+    {:
+        Nodo n = nodo("lista_expr", "LISTA_EXPR");
+        agregar(n, e);
+        RESULT = n;
+    :}
+    ;
+
+// Estructuras de control
+estructura_control ::=
+    decide_of:d {: RESULT = d; :}
+    | loop_structure:l {: RESULT = l; :}
+    | for_structure:f {: RESULT = f; :}
+    ;
+
+decide_of ::=
+    DECIDE OF casos:c END DECIDE ENDL
+    {:
+        Nodo n = nodo("decide_of", "DECIDE");
+        agregar(n, c);
+        RESULT = n;
+    :}
+    | DECIDE OF casos:c ELSE FLECHA bloque:b END DECIDE ENDL
+    {:
+        Nodo n = nodo("decide_of_else", "DECIDE");
+        agregar(n, c);
+        Nodo elseN = nodo("else", "ELSE");
+        agregar(elseN, b);
+        agregar(n, elseN);
+        RESULT = n;
+    :}
+    ;
+
+casos ::=
+    casos:cs caso:c
+    {:
+        agregar(cs, c);
+        RESULT = cs;
+    :}
+    | caso:c
+    {:
+        Nodo n = nodo("casos", "CASOS");
+        agregar(n, c);
+        RESULT = n;
+    :}
+    ;
+
+caso ::=
+    expresion:e FLECHA bloque:b
+    {:
+        Nodo n = nodo("caso", "CASO");
+        agregar(n, e);
+        agregar(n, b);
+        RESULT = n;
+    :}
+    ;
+
+loop_structure ::=
+    LOOP sentencias:s1 EXIT WHEN expresion:e ENDL sentencias:s2 END LOOP ENDL
+    {:
+        Nodo n = nodo("loop", "LOOP");
+        agregar(n, s1);
+        Nodo exitNode = nodo("exit_when", "EXIT_WHEN");
+        agregar(exitNode, e);
+        agregar(n, exitNode);
+        agregar(n, s2);
+        RESULT = n;
+    :}
+    | LOOP sentencias:s EXIT WHEN expresion:e ENDL END LOOP ENDL
+    {:
+        Nodo n = nodo("loop", "LOOP");
+        agregar(n, s);
+        Nodo exitNode = nodo("exit_when", "EXIT_WHEN");
+        agregar(exitNode, e);
+        agregar(n, exitNode);
+        RESULT = n;
+    :}
+    ;
+
+for_structure ::=
+    FOR PAREN_IZQ asignacion_for:af expresion:e ENDL expresion:inc PAREN_DER bloque:b
+    {:
+        Nodo n = nodo("for", "FOR");
+        agregar(n, af);
+        agregar(n, e);
+        agregar(n, inc);
+        agregar(n, b);
+        RESULT = n;
+    :}
+    ;
+
+asignacion_for ::=
+    tipo:t ID:id ASIGNACION expresion:e ENDL
+    {:
+        Nodo n = nodo("init_for", "INIT_FOR");
+        agregar(n, t);
+        agregar(n, nodo(id, "ID"));
+        agregar(n, e);
+        RESULT = n;
+    :}
+    | ID:id ASIGNACION expresion:e ENDL
+    {:
+        Nodo n = nodo("asig_for", "ASIG_FOR");
+        agregar(n, nodo(id, "ID"));
+        agregar(n, e);
+        RESULT = n;
+    :}
+    ;
+
+// Entrada y salida
+entrada_salida ::=
+    SHOW PAREN_IZQ argumentos:args PAREN_DER ENDL
+    {:
+        Nodo n = nodo("show", "SHOW");
+        agregar(n, args);
+        RESULT = n;
+    :}
+    | GET PAREN_IZQ ID:id PAREN_DER ENDL
+    {:
+        Nodo n = nodo("get", "GET");
+        agregar(n, nodo(id, "ID"));
+        RESULT = n;
+    :}
+    ;
+
+argumentos ::=
+    lista_argumentos:la {: RESULT = la; :}
+    | /* epsilon */ {: RESULT = nodo("sin_args", "ARGS"); :}
+    ;
+
+lista_argumentos ::=
+    lista_argumentos:la COMA argumento:a
+    {:
+        agregar(la, a);
+        RESULT = la;
+    :}
+    | argumento:a
+    {:
+        Nodo n = nodo("argumentos", "ARGS");
+        agregar(n, a);
+        RESULT = n;
+    :}
+    ;
+
+argumento ::=
+    expresion:e {: RESULT = e; :}
+    | STRING_LIT:s {: RESULT = nodo(s, "STRING_LIT"); :}
+    ;
+
+// Expresiones
+expresion ::= expresion_logica:el {: RESULT = el; :};
+
+expresion_logica ::=
+    expresion_logica:el OR expresion_and:ea
+    {:
+        Nodo n = nodo("or", "OP_OR");
+        agregar(n, el);
+        agregar(n, ea);
+        RESULT = n;
+    :}
+    | expresion_and:ea {: RESULT = ea; :}
+    ;
+
+expresion_and ::=
+    expresion_and:ea AND expresion_relacional:er
+    {:
+        Nodo n = nodo("and", "OP_AND");
+        agregar(n, ea);
+        agregar(n, er);
+        RESULT = n;
+    :}
+    | expresion_relacional:er {: RESULT = er; :}
+    ;
+
+expresion_relacional ::=
+    expresion_aritmetica:e1 op_relacional:op expresion_aritmetica:e2
+    {:
+        agregar(op, e1);
+        agregar(op, e2);
+        RESULT = op;
+    :}
+    | expresion_aritmetica:ea {: RESULT = ea; :}
+    ;
+
+op_relacional ::=
+    MENOR          {: RESULT = nodo("<", "OP_MENOR"); :}
+    | MENOR_IGUAL  {: RESULT = nodo("<=", "OP_MENOR_IGUAL"); :}
+    | MAYOR        {: RESULT = nodo(">", "OP_MAYOR"); :}
+    | MAYOR_IGUAL  {: RESULT = nodo(">=", "OP_MAYOR_IGUAL"); :}
+    | IGUAL_IGUAL  {: RESULT = nodo("==", "OP_IGUAL"); :}
+    | DIFERENTE    {: RESULT = nodo("!=", "OP_DIFERENTE"); :}
+    ;
+
+expresion_aritmetica ::=
+    expresion_aritmetica:ea MAS termino:t
+    {:
+        Nodo n = nodo("+", "OP_SUMA");
+        agregar(n, ea);
+        agregar(n, t);
+        RESULT = n;
+    :}
+    | expresion_aritmetica:ea MENOS termino:t
+    {:
+        Nodo n = nodo("-", "OP_RESTA");
+        agregar(n, ea);
+        agregar(n, t);
+        RESULT = n;
+    :}
+    | termino:t {: RESULT = t; :}
+    ;
+
+termino ::=
+    termino:t MULT factor:f
+    {:
+        Nodo n = nodo("*", "OP_MULT");
+        agregar(n, t);
+        agregar(n, f);
+        RESULT = n;
+    :}
+    | termino:t DIV factor:f
+    {:
+        Nodo n = nodo("/", "OP_DIV");
+        agregar(n, t);
+        agregar(n, f);
+        RESULT = n;
+    :}
+    | termino:t DIV_ENTERA factor:f
+    {:
+        Nodo n = nodo("//", "OP_DIV_ENTERA");
+        agregar(n, t);
+        agregar(n, f);
+        RESULT = n;
+    :}
+    | termino:t MODULO factor:f
+    {:
+        Nodo n = nodo("%", "OP_MODULO");
+        agregar(n, t);
+        agregar(n, f);
+        RESULT = n;
+    :}
+    | factor:f {: RESULT = f; :}
+    ;
+
+factor ::=
+    base:b POTENCIA factor:f
+    {:
+        Nodo n = nodo("^", "OP_POTENCIA");
+        agregar(n, b);
+        agregar(n, f);
+        RESULT = n;
+    :}
+    | base:b {: RESULT = b; :}
+    ;
+
+base ::=
+    INCREMENTO ID:id
+    {:
+        Nodo n = nodo("++", "OP_INCREMENTO");
+        agregar(n, nodo(id, "ID"));
+        RESULT = n;
+    :}
+    | DECREMENTO ID:id
+    {:
+        Nodo n = nodo("--", "OP_DECREMENTO");
+        agregar(n, nodo(id, "ID"));
+        RESULT = n;
+    :}
+    | MENOS base:b
+    {:
+        Nodo n = nodo("-", "OP_NEGATIVO");
+        agregar(n, b);
+        RESULT = n;
+    :}
+    | NOT base:b
+    {:
+        Nodo n = nodo("!", "OP_NOT");
+        agregar(n, b);
+        RESULT = n;
+    :}
+    | primario:p {: RESULT = p; :}
+    ;
+
+primario ::=
+    INT_LIT:i {: RESULT = nodo(i.toString(), "INT_LIT"); :}
+    | FLOAT_LIT:f {: RESULT = nodo(f.toString(), "FLOAT_LIT"); :}
+    | BOOL_LIT:b {: RESULT = nodo(b, "BOOL_LIT"); :}
+    | CHAR_LIT:c {: RESULT = nodo(c, "CHAR_LIT"); :}
+    | ID:id {: RESULT = nodo(id, "ID"); :}
+    | ID:id CORCHETE_IZQ expresion:e1 CORCHETE_DER 
+      CORCHETE_IZQ expresion:e2 CORCHETE_DER
+    {:
+        Nodo n = nodo("acceso_array", "ARRAY_ACCESS");
+        agregar(n, nodo(id, "ID"));
+        agregar(n, e1);
+        agregar(n, e2);
+        RESULT = n;
+    :}
+    | llamada_funcion:lf {: RESULT = lf; :}
+    | PAREN_IZQ expresion:e PAREN_DER
+    {:
+        Nodo n = nodo("expr_paren", "EXPR_PAREN");
+        agregar(n, e);
+        RESULT = n;
+    :}
+    ;
+
+llamada_funcion ::=
+    ID:id PAREN_IZQ argumentos:args PAREN_DER
+    {:
+        Nodo n = nodo("call_" + id, "LLAMADA_FUNC");
+        agregar(n, nodo(id, "ID"));
+        agregar(n, args);RESULT = n;
+:}
+;

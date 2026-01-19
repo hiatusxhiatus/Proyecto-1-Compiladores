@@ -1,0 +1,7 @@
+gift coal navidad ¿ ? ¡
+    local int x = 10 endl
+    local int y = 20 endl
+    local int suma = x + y endl
+    
+    show ¿ suma ? endl
+!
