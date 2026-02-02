@@ -1,32 +1,36 @@
 world string s2 endl
-world string ss endl
-world float ff endl
-world int ii endl
-gift bool func2 ¿ bool b1, int i1 ? ¡
-local int y endl
-return 5*1 endl
-!
-gift float mi ¿ int dif, char otra ? ¡
-local int otra endl
-for ¿ i=20 endl i>10 endl ++i ? ¡
-decide of
-¿ x24>var ? -> ¡
-show ¿ "entra al if" ? endl
-!
-end decide endl
-!
-return 1 endl
-!
-coal navidad ¿ ? ¡
-local float miFloat=-0.01 endl
-local bool b1 endl
-local string s1 endl
-show ¿ b1 ? endl
-show ¿ true ? endl
-show ¿ -6.7 ? endl
-local float fl1=56.6 endl
-local bool bl0 = 6.7 != 8.9 endl
-bl0 = true != false endl
+world string ss endl 
+world float ff endl 
+world int ii endl 
 
-return 1 endl
+gift bool func2 ¿ bool b1, int i1 ? ¡ 
+    local int y endl
+    return 5*1 endl
+!  
+
+gift float mi ¿ int dif, char otra ? ¡
+    local int otra endl
+    for ¿ i=20 endl i>10 endl ++i ? ¡
+        decide of
+        ¿ x24>var ? -> ¡
+            show ¿ "entra al if" ? endl
+        !
+        end decide endl
+    !
+    return 1 endl
+!
+
+coal navidad ¿ ? ¡
+    local float miFloat=-0.01 endl
+    local bool b1 endl
+    local string s1 endl
+    show ¿ b1 ? endl
+    show ¿ true ? endl
+    show ¿ -6.7 ? endl
+
+    local float fl1=56.6 endl
+    local bool bl0 = 6.7 != 8.9 endl
+    bl0 = true != false endl
+    
+    return 1 endl
 !

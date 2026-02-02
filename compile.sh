@@ -1,31 +1,18 @@
-#!/bin/bash
+cd lib
+curl -L https://github.com/jflex-de/jflex/releases/download/v1.8.2/jflex-full-1.8.2.jar -o jflex-full-1.8.2.jar
+cd ..
 
-echo "=== COMPILANDO PROYECTO 2 CORREGIDO ==="
+# 2. Generar Lexer
+java -jar lib/jflex-full-1.8.2.jar -d src/lexer src/lexer/lexer.flex
 
-# Limpiar archivos previos
-echo "[1/4] Limpiando archivos antiguos..."
-rm -f src/lexer/Lexer.java
-rm -f src/parser/Parser.java src/parser/sym.java
-rm -f src/**/*.class
-
-# Generar Lexer
-echo "[2/4] Generando Lexer con JFlex..."
-java -jar lib/java-cup-11b.jar -destdir src/lexer src/lexer/lexer.flex
-
-# Generar Parser
-echo "[3/4] Generando Parser con CUP..."
+# 3. Generar Parser
 java -jar lib/java-cup-11b.jar -parser Parser -symbols sym -destdir src/parser src/parser/parser.cup
 
-# Compilar todo
-echo "[4/4] Compilando clases Java..."
-javac -cp "lib/*:src" -d src src/lexer/Lexer.java
-javac -cp "lib/*:src" -d src src/parser/Parser.java src/parser/sym.java
-javac -cp "lib/*:src" -d src src/utils/*.java
-javac -cp "lib/*:src" -d src src/Main.java
+# 4. Compilar todo
+javac -cp "lib/*:src" src/lexer/Lexer.java -d src
+javac -cp "lib/*:src" src/parser/Parser.java src/parser/sym.java -d src
+javac -cp "lib/*:src" src/utils/*.java -d src
+javac -cp "lib/*:src" src/Main.java -d src
 
-echo ""
-echo "=== COMPILACION EXITOSA ==="
-echo ""
-echo "Para ejecutar:"
-echo "  java -cp lib/*:src Main test/archivo_prueba.txt"
-echo ""
+# 5. Ejecutar
+java -cp "lib/*:src" Main test/prueba_final.txt
