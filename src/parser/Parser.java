@@ -79,9 +79,9 @@ public class Parser extends java_cup.runtime.lr_parser {
     unpackFromStrings(new String[] {
     "\000\374\000\012\003\012\004\006\022\007\024\013\001" +
     "\002\000\004\002\376\001\002\000\010\003\024\022\007" +
-    "\024\013\001\002\000\014\026\133\027\131\030\132\031" +
-    "\130\032\126\001\002\000\014\026\133\027\131\030\132" +
-    "\031\130\032\126\001\002\000\010\003\ufff3\022\ufff3\024" +
+    "\024\013\001\002\000\014\026\133\027\132\030\130\031" +
+    "\131\032\126\001\002\000\014\026\133\027\132\030\130" +
+    "\031\131\032\126\001\002\000\010\003\ufff3\022\ufff3\024" +
     "\ufff3\001\002\000\004\002\ufffd\001\002\000\010\002\ufffc" +
     "\025\026\060\025\001\002\000\004\023\027\001\002\000" +
     "\012\003\020\004\006\022\007\024\013\001\002\000\012" +
@@ -175,8 +175,8 @@ public class Parser extends java_cup.runtime.lr_parser {
     "\054\025\uff98\033\uff98\034\uff98\035\uff98\036\uff98\037\uff98" +
     "\040\uff98\041\uff98\044\uff98\045\uff98\046\uff98\047\uff98\050" +
     "\uff98\051\uff98\052\uff98\053\uff98\056\uff98\060\uff98\062\uff98" +
-    "\063\uff98\064\uff98\001\002\000\014\026\133\027\131\030" +
-    "\132\031\130\032\126\001\002\000\052\025\uffa2\033\uffa2" +
+    "\063\uff98\064\uff98\001\002\000\014\026\133\027\132\030" +
+    "\130\031\131\032\126\001\002\000\052\025\uffa2\033\uffa2" +
     "\034\uffa2\035\uffa2\036\uffa2\037\uffa2\040\uffa2\044\uffa2\045" +
     "\uffa2\046\uffa2\047\uffa2\050\uffa2\051\uffa2\052\uffa2\053\uffa2" +
     "\056\uffa2\060\uffa2\062\uffa2\063\uffa2\064\uffa2\001\002\000" +
@@ -221,8 +221,8 @@ public class Parser extends java_cup.runtime.lr_parser {
     "\uff93\041\uff93\044\uff93\045\uff93\046\uff93\047\uff93\050\uff93" +
     "\051\uff93\052\uff93\053\uff93\056\uff93\060\uff93\062\uff93\063" +
     "\uff93\064\uff93\001\002\000\004\070\uffe3\001\002\000\004" +
-    "\070\134\001\002\000\004\070\uffe4\001\002\000\004\070" +
-    "\uffe6\001\002\000\004\070\uffe5\001\002\000\004\070\uffe7" +
+    "\070\134\001\002\000\004\070\uffe5\001\002\000\004\070" +
+    "\uffe4\001\002\000\004\070\uffe6\001\002\000\004\070\uffe7" +
     "\001\002\000\012\025\uffe8\061\144\064\uffe8\065\uffe8\001" +
     "\002\000\010\025\140\064\136\065\137\001\002\000\004" +
     "\070\143\001\002\000\026\034\064\042\052\043\062\054" +
@@ -421,7 +421,7 @@ public class Parser extends java_cup.runtime.lr_parser {
     "\uff9c\037\uff9c\040\uff9c\041\uff9c\044\uff9c\045\uff9c\046\uff9c" +
     "\047\uff9c\050\uff9c\051\uff9c\052\uff9c\053\uff9c\056\uff9c\060" +
     "\uff9c\062\uff9c\063\uff9c\064\uff9c\001\002\000\016\026\133" +
-    "\027\131\030\132\031\130\032\126\070\313\001\002\000" +
+    "\027\132\030\130\031\131\032\126\070\313\001\002\000" +
     "\004\065\327\001\002\000\026\034\064\042\052\043\062" +
     "\054\045\055\102\066\101\067\036\070\105\072\037\073" +
     "\075\001\002\000\004\070\316\001\002\000\004\065\317" +
@@ -448,11 +448,11 @@ public class Parser extends java_cup.runtime.lr_parser {
     "\020\uffbe\021\uffbe\034\uffbe\042\uffbe\043\uffbe\054\uffbe\055" +
     "\uffbe\060\uffbe\066\uffbe\067\uffbe\070\uffbe\072\uffbe\073\uffbe" +
     "\001\002\000\004\070\337\001\002\000\004\055\340\001" +
-    "\002\000\016\026\133\027\131\030\132\031\130\032\126" +
+    "\002\000\016\026\133\027\132\030\130\031\131\032\126" +
     "\056\uffed\001\002\000\006\056\uffeb\064\uffeb\001\002\000" +
     "\004\070\351\001\002\000\004\056\347\001\002\000\006" +
-    "\056\uffee\064\345\001\002\000\014\026\133\027\131\030" +
-    "\132\031\130\032\126\001\002\000\006\056\uffec\064\uffec" +
+    "\056\uffee\064\345\001\002\000\014\026\133\027\132\030" +
+    "\130\031\131\032\126\001\002\000\006\056\uffec\064\uffec" +
     "\001\002\000\004\057\033\001\002\000\010\003\ufff2\022" +
     "\ufff2\024\ufff2\001\002\000\006\056\uffea\064\uffea\001\002" +
     "\000\004\070\353\001\002\000\012\025\uffe8\061\361\064" +
@@ -661,13 +661,13 @@ public class Parser extends java_cup.runtime.lr_parser {
 
 
 
-    // Lista de tablas de simbolos
+    // tablas de simbolos y arbol
     public List<TablaSimbolos> tablasSimbolos = new ArrayList<>();
     public TablaSimbolos tablaActual = null;
     public Nodo arbolSintactico = null;
     private int contadorScopes = 0;
     
-    // Manejo de errores sintacticos con modo panico
+    // errores sintacticos
     public void syntax_error(Symbol s) {
         System.err.println("\n[ERROR SINTACTICO] Linea " + (s.left) + 
                           ", Columna " + (s.right));
@@ -677,20 +677,18 @@ public class Parser extends java_cup.runtime.lr_parser {
         System.err.println("Recuperando del error...\n");
     }
     
-    // Error no recuperable
     public void unrecovered_syntax_error(Symbol s) {
         System.err.println("\n[ERROR FATAL] No se pudo recuperar del error sintactico");
         System.err.println("Linea " + (s.left) + ", Columna " + (s.right));
         System.err.println("Abortando analisis.\n");
     }
     
-    // Crear nueva tabla de simbolos
+    // crear tabla nueva
     public void nuevaTabla(String nombre) {
         tablaActual = new TablaSimbolos(nombre);
         tablasSimbolos.add(tablaActual);
     }
     
-    // Imprimir tablas de simbolos
     public void imprimirTablas() {
         if (tablasSimbolos.isEmpty()) {
             System.out.println("\n[INFO] No hay tablas de simbolos generadas\n");
@@ -712,12 +710,11 @@ public class Parser extends java_cup.runtime.lr_parser {
 class CUP$Parser$actions {
 
 
-    // Helper para crear nodos simples
+    // helpers para nodos
     private Nodo nodo(String lexema, String tipo) {
         return new Nodo(lexema, tipo);
     }
     
-    // Helper para crear nodos con hijos
     private Nodo nodoH(String lexema, String tipo, Nodo... hijos) {
         List<Nodo> lista = new ArrayList<>();
         for (Nodo h : hijos) {
@@ -726,7 +723,6 @@ class CUP$Parser$actions {
         return new Nodo(lexema, tipo, lista);
     }
     
-    // Helper para agregar hijo a nodo
     private void agregar(Nodo padre, Nodo hijo) {
         if (padre != null && hijo != null) {
             padre.agregarHijo(hijo);
@@ -1074,7 +1070,7 @@ class CUP$Parser$actions {
 		
         parser.nuevaTabla("funcion_" + id);
         
-        // Agregar parametros a tabla
+        // agregar params a la tabla
         if (parser.tablaActual != null && params != null) {
             List<Nodo> hijosParams = params.getHijos();
             if (hijosParams != null) {
@@ -1276,13 +1272,13 @@ class CUP$Parser$actions {
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 28: // tipo ::= BOOLEAN 
+          case 28: // tipo ::= BOOL 
             {
               Nodo RESULT =null;
 		int tleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int tright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object t = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = nodo("boolean", "TIPO"); 
+		 RESULT = nodo("bool", "TIPO"); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("tipo",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1482,7 +1478,6 @@ class CUP$Parser$actions {
 		int idsright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Nodo ids = (Nodo)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		
-        
         if (parser.tablaActual != null && ids != null && ids.tieneHijos()) {
             for (Nodo idNode : ids.getHijos()) {
                 String nombreVar = idNode.getLexema();
@@ -1516,7 +1511,6 @@ class CUP$Parser$actions {
 		int eright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Nodo e = (Nodo)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		
-        
         if (parser.tablaActual != null && ids != null && ids.tieneHijos()) {
             for (Nodo idNode : ids.getHijos()) {
                 String nombreVar = idNode.getLexema();

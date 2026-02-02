@@ -25,6 +25,7 @@ public class sym {
   public static final int DECIDE = 4;
   public static final int COAL = 18;
   public static final int OR = 41;
+  public static final int BOOL = 22;
   public static final int GET = 15;
   public static final int NAVIDAD = 17;
   public static final int PAREN_DER = 44;
@@ -36,7 +37,6 @@ public class sym {
   public static final int IGUAL_IGUAL = 38;
   public static final int OF = 5;
   public static final int EOF = 0;
-  public static final int BOOLEAN = 22;
   public static final int DIV_ENTERA = 29;
   public static final int RETURN = 12;
   public static final int DECREMENTO = 33;
@@ -89,7 +89,7 @@ public class sym {
   "ENDL",
   "INT",
   "FLOAT",
-  "BOOLEAN",
+  "BOOL",
   "CHAR",
   "STRING",
   "MAS",

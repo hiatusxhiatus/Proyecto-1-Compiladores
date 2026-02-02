@@ -24,16 +24,14 @@ import parser.sym;
 // expresiones regulares basicas
 WhiteSpace = [ \t\r\n]+
 LineComment = \|[^\n]*
-MultiComment = є[^э]*э
-
+MultiComment = "Ñ"[^"Ñ"]*"Ñ"
 Digit = [0-9]
 Letter = [a-zA-Z]
 Integer = {Digit}+
 Float = {Digit}+\.{Digit}+
-Identifier = {Letter}({Letter}|{Digit}|_)*
-
+Identifier = ({Letter}|_)({Letter}|{Digit}|_)*
 StringLiteral = \"[^\"]*\"
-CharLiteral = \'[^\']*\'
+CharLiteral = \'[^\']\'
 
 %%
 
@@ -60,7 +58,7 @@ CharLiteral = \'[^\']*\'
 // tipos
 "int"           { return symbol(sym.INT, yytext()); }
 "float"         { return symbol(sym.FLOAT, yytext()); }
-"boolean"       { return symbol(sym.BOOLEAN, yytext()); }
+"bool"          { return symbol(sym.BOOL, yytext()); }
 "char"          { return symbol(sym.CHAR, yytext()); }
 "string"        { return symbol(sym.STRING, yytext()); }
 
@@ -83,12 +81,12 @@ CharLiteral = \'[^\']*\'
 "=="            { return symbol(sym.IGUAL_IGUAL, yytext()); }
 "!="            { return symbol(sym.DIFERENTE, yytext()); }
 
-// operadores logicos
+// Operadores logicos
 "@"             { return symbol(sym.AND, yytext()); }
 "~"             { return symbol(sym.OR, yytext()); }
 "Σ"             { return symbol(sym.NOT, yytext()); }
 
-// simbolos especiales
+// Simbolos especiales
 "¿"             { return symbol(sym.PAREN_IZQ, yytext()); }
 "?"             { return symbol(sym.PAREN_DER, yytext()); }
 "¡"             { return symbol(sym.LLAVE_IZQ, yytext()); }
@@ -102,8 +100,16 @@ CharLiteral = \'[^\']*\'
 // literales
 {Integer}       { return symbol(sym.INT_LIT, Integer.parseInt(yytext())); }
 {Float}         { return symbol(sym.FLOAT_LIT, Double.parseDouble(yytext())); }
-{StringLiteral} { return symbol(sym.STRING_LIT, yytext()); }
-{CharLiteral}   { return symbol(sym.CHAR_LIT, yytext()); }
+{StringLiteral} { 
+    String str = yytext();
+    str = str.substring(1, str.length()-1);
+    return symbol(sym.STRING_LIT, str); 
+}
+{CharLiteral}   { 
+    String ch = yytext();
+    ch = ch.substring(1, ch.length()-1);
+    return symbol(sym.CHAR_LIT, ch); 
+}
 "true"|"false"  { return symbol(sym.BOOL_LIT, yytext()); }
 
 // identificadores
@@ -115,4 +121,7 @@ CharLiteral = \'[^\']*\'
 {MultiComment}  { /* ignorar comentarios multilinea */ }
 
 // errores
-.               { throw new Error("Caracter no reconocido: '" + yytext() + "'"); }
+.               { 
+    System.err.println("[ERROR LEXICO] Caracter no reconocido '" + yytext() + 
+                       "' en linea " + (yyline+1) + ", columna " + (yycolumn+1));
+}

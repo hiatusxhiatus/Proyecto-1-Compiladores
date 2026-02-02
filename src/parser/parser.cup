@@ -6,15 +6,14 @@ import utils.TablaSimbolos;
 import java.util.ArrayList;
 import java.util.List;
 
-// Codigo del parser
 parser code {:
-    // Lista de tablas de simbolos
+    // tablas de simbolos y arbol
     public List<TablaSimbolos> tablasSimbolos = new ArrayList<>();
     public TablaSimbolos tablaActual = null;
     public Nodo arbolSintactico = null;
     private int contadorScopes = 0;
     
-    // Manejo de errores sintacticos con modo panico
+    // errores sintacticos
     public void syntax_error(Symbol s) {
         System.err.println("\n[ERROR SINTACTICO] Linea " + (s.left) + 
                           ", Columna " + (s.right));
@@ -24,20 +23,18 @@ parser code {:
         System.err.println("Recuperando del error...\n");
     }
     
-    // Error no recuperable
     public void unrecovered_syntax_error(Symbol s) {
         System.err.println("\n[ERROR FATAL] No se pudo recuperar del error sintactico");
         System.err.println("Linea " + (s.left) + ", Columna " + (s.right));
         System.err.println("Abortando analisis.\n");
     }
     
-    // Crear nueva tabla de simbolos
+    // crear tabla nueva
     public void nuevaTabla(String nombre) {
         tablaActual = new TablaSimbolos(nombre);
         tablasSimbolos.add(tablaActual);
     }
     
-    // Imprimir tablas de simbolos
     public void imprimirTablas() {
         if (tablasSimbolos.isEmpty()) {
             System.out.println("\n[INFO] No hay tablas de simbolos generadas\n");
@@ -54,14 +51,12 @@ parser code {:
     }
 :};
 
-// Codigo de accion
 action code {:
-    // Helper para crear nodos simples
+    // helpers para nodos
     private Nodo nodo(String lexema, String tipo) {
         return new Nodo(lexema, tipo);
     }
     
-    // Helper para crear nodos con hijos
     private Nodo nodoH(String lexema, String tipo, Nodo... hijos) {
         List<Nodo> lista = new ArrayList<>();
         for (Nodo h : hijos) {
@@ -70,7 +65,6 @@ action code {:
         return new Nodo(lexema, tipo, lista);
     }
     
-    // Helper para agregar hijo a nodo
     private void agregar(Nodo padre, Nodo hijo) {
         if (padre != null && hijo != null) {
             padre.agregarHijo(hijo);
@@ -78,10 +72,10 @@ action code {:
     }
 :};
 
-/* =============== TERMINALES =============== */
+/* terminales */
 terminal WORLD, LOCAL, DECIDE, OF, ELSE, END, LOOP, EXIT, WHEN;
 terminal FOR, RETURN, BREAK, SHOW, GET, GIFT, NAVIDAD, COAL, ENDL;
-terminal INT, FLOAT, BOOLEAN, CHAR, STRING;
+terminal INT, FLOAT, BOOL, CHAR, STRING;
 terminal MAS, MENOS, MULT, DIV, DIV_ENTERA, MODULO, POTENCIA;
 terminal INCREMENTO, DECREMENTO;
 terminal MENOR, MENOR_IGUAL, MAYOR, MAYOR_IGUAL, IGUAL_IGUAL, DIFERENTE;
@@ -92,7 +86,7 @@ terminal Integer INT_LIT;
 terminal Double FLOAT_LIT;
 terminal String ID, STRING_LIT, CHAR_LIT, BOOL_LIT;
 
-/* =============== NO TERMINALES =============== */
+/* no terminales */
 non terminal Nodo programa, declaraciones_globales, declaracion_global;
 non terminal Nodo procedimientos, procedimiento, metodo_main;
 non terminal Nodo parametros, lista_parametros, parametro;
@@ -108,7 +102,7 @@ non terminal Nodo op_relacional, expresion_aritmetica, termino, factor, base, pr
 non terminal Nodo llamada_funcion;
 non terminal crear_tabla_main;
 
-/* =============== PRECEDENCIA =============== */
+/* precedencia */
 precedence left OR;
 precedence left AND;
 precedence left IGUAL_IGUAL, DIFERENTE;
@@ -120,9 +114,9 @@ precedence right NOT, INCREMENTO, DECREMENTO;
 
 start with programa;
 
-/* =============== GRAMATICA =============== */
+/* gramatica */
 
-// Programa principal
+// programa - puede tener o no declaraciones globales
 programa ::= 
     declaraciones_globales:dg procedimientos:p metodo_main:m
     {:
@@ -167,7 +161,6 @@ programa ::=
     :}
     ;
 
-// Declaraciones globales
 declaraciones_globales ::=
     declaraciones_globales:dg declaracion_global:d
     {:
@@ -230,7 +223,6 @@ declaracion_global ::=
     :}
     ;
 
-// Procedimientos
 procedimientos ::=
     procedimientos:ps procedimiento:p
     {:
@@ -250,7 +242,7 @@ procedimiento ::=
     {:
         parser.nuevaTabla("funcion_" + id);
         
-        // Agregar parametros a tabla
+        // agregar params a la tabla
         if (parser.tablaActual != null && params != null) {
             List<Nodo> hijosParams = params.getHijos();
             if (hijosParams != null) {
@@ -280,7 +272,6 @@ procedimiento ::=
     :}
     ;
 
-// Metodo main
 metodo_main ::=
     COAL NAVIDAD PAREN_IZQ PAREN_DER crear_tabla_main bloque:b
     {:
@@ -293,17 +284,15 @@ metodo_main ::=
     ;
 
 crear_tabla_main ::=
-    /* epsilon */
     {:
         parser.nuevaTabla("navidad");
     :}
     ;
 
-// Parametros
 parametros ::=
     lista_parametros:lp
     {: RESULT = lp; :}
-    | /* epsilon */
+    | 
     {: RESULT = nodo("sin_parametros", "PARAMS"); :}
     ;
 
@@ -348,12 +337,11 @@ lista_ids ::=
 tipo ::=
     INT:t     {: RESULT = nodo("int", "TIPO"); :}
     | FLOAT:t   {: RESULT = nodo("float", "TIPO"); :}
-    | BOOLEAN:t {: RESULT = nodo("boolean", "TIPO"); :}
+    | BOOL:t    {: RESULT = nodo("bool", "TIPO"); :}
     | CHAR:t    {: RESULT = nodo("char", "TIPO"); :}
     | STRING:t  {: RESULT = nodo("string", "TIPO"); :}
     ;
 
-// Bloque
 bloque ::=
     LLAVE_IZQ sentencias:s LLAVE_DER
     {:
@@ -405,11 +393,9 @@ sentencia ::=
     :}
     ;
 
-// Declaracion local
 declaracion_local ::=
     LOCAL tipo:t lista_ids:ids ENDL
     {:
-        
         if (parser.tablaActual != null && ids != null && ids.tieneHijos()) {
             for (Nodo idNode : ids.getHijos()) {
                 String nombreVar = idNode.getLexema();
@@ -427,7 +413,6 @@ declaracion_local ::=
     :}
     | LOCAL tipo:t lista_ids:ids ASIGNACION expresion:e ENDL
     {:
-        
         if (parser.tablaActual != null && ids != null && ids.tieneHijos()) {
             for (Nodo idNode : ids.getHijos()) {
                 String nombreVar = idNode.getLexema();
@@ -477,7 +462,6 @@ declaracion_local ::=
     :}
     ;
 
-// Asignacion
 asignacion ::=
     ID:id ASIGNACION expresion:e ENDL
     {:
@@ -500,7 +484,6 @@ asignacion ::=
     :}
     ;
 
-// Inicializacion arreglo
 inicializacion_arreglo ::=
     fila_arreglo:f
     {:
@@ -538,7 +521,6 @@ lista_expresiones ::=
     :}
     ;
 
-// Estructuras de control
 estructura_control ::=
     decide_of:d {: RESULT = d; :}
     | loop_structure:l {: RESULT = l; :}
@@ -639,7 +621,6 @@ asignacion_for ::=
     :}
     ;
 
-// Entrada y salida
 entrada_salida ::=
     SHOW PAREN_IZQ argumentos:args PAREN_DER ENDL
     {:
@@ -657,7 +638,7 @@ entrada_salida ::=
 
 argumentos ::=
     lista_argumentos:la {: RESULT = la; :}
-    | /* epsilon */ {: RESULT = nodo("sin_args", "ARGS"); :}
+    | {: RESULT = nodo("sin_args", "ARGS"); :}
     ;
 
 lista_argumentos ::=
@@ -679,7 +660,6 @@ argumento ::=
     | STRING_LIT:s {: RESULT = nodo(s, "STRING_LIT"); :}
     ;
 
-// Expresiones
 expresion ::= expresion_logica:el {: RESULT = el; :};
 
 expresion_logica ::=
@@ -844,3 +824,4 @@ llamada_funcion ::=
         agregar(n, args);RESULT = n;
 :}
 ;
+
