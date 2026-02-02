@@ -395,8 +395,6 @@ sentencia ::=
         agregar(n, e);
         RESULT = n;
     :}
-    | RETURN ENDL
-    {: RESULT = nodo("return_void", "RETURN"); :}
     | BREAK ENDL
     {: RESULT = nodo("break", "BREAK"); :}
     | entrada_salida:es {: RESULT = es; :}
