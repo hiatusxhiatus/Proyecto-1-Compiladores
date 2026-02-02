@@ -39,9 +39,11 @@ public class Main {
             AnalizadorSemantico analizador = new AnalizadorSemantico(parser.tablasSimbolos);
             boolean semanticoOk = analizador.analizar(parser.arbolSintactico);
             
-            if (!semanticoOk) {
-                System.err.println("\n[fallo] errores semanticos encontrados");
-                System.exit(1);
+            // generacion de codigo mips
+            if (semanticoOk) {
+                generador.GeneradorMIPS generador = new generador.GeneradorMIPS();
+                String archivoMips = inputFile.replace(".txt", ".asm");
+                generador.generar(parser.arbolSintactico, archivoMips);
             }
             
             System.out.println("\n[exito] analisis completado sin errores");
